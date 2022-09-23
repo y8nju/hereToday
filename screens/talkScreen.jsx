@@ -1,28 +1,55 @@
-import { useState } from 'react';
-import { FlatList, Keyboard, Pressable, StyleSheet, TextInput, TouchableWithoutFeedback, View } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { FlatList, Keyboard, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import defaultStyle from './styleSheet';
 
-import CustomText from '../Components/customText';
 import TalkItem from '../Components/talkItem';
-import TalkWrite from '../Components/talkWrite';
+import { useNavigation } from '@react-navigation/native';
+import { messageList } from '../util/messages';
+import { AppContext } from '../context/appContext';
+import CustomText from '../Components/customText';
 
-export default function TalkScreen() {
+export default function TalkScreen({route}) {
+	console.log(route)
+	const navigation = useNavigation();
+	const [messages, setMessages] = useState([]);
+	const ctx = useContext(AppContext);
+	useEffect(() => {
+		navigation.setOptions({
+			title: "안녕"
+		});
+		onRead();
+	}, [route]);
+	const onAddItemHandle = ()=> {
+		navigation.navigate('TalkWrite');
+	}
+	
+	function onRead() {
+		messageList()
+		.then( (recv) => {
+			const messageArr = Object.keys(recv).map((name) => { return {name, ...recv[name]}});
+			console.log(messageArr)
+			setMessages(messageArr);
+		})
+	}
+	console.log(messages instanceof Array);
+
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
-		<View>
-			<TalkWrite></TalkWrite>
-		</View>
-			<View style={styles.addBtn}>
-				<Pressable android_ripple={{color: '#fff'}} style={{flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+			<View style={{flex:1}}>	
+			{messages && <FlatList style={{flex: 1}} data={messages}  
+				keyExtractor={({name})=> name}
+				renderItem={(one)=> <TalkItem data={one} />}
+				/>}
+				
+			</View>
+			{ctx.auth && <View style={styles.addBtn}>
+				<Pressable android_ripple={{color: '#fff'}} onPress={onAddItemHandle}
+					style={{flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					<Ionicons name="add" size={32} color="#fff" />
 				</Pressable>
-			</View>
-			{/* <FlatList style={{flex: 1}} data={} 
-				renderItem={<TalkItem />}>
-			</FlatList> */}
-			<TalkItem />
+			</View>}
 		</View>
 	</TouchableWithoutFeedback> );
 }

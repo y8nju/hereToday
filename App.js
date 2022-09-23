@@ -14,6 +14,8 @@ import LoginScreen from './screens/loginScreen';
 import RegisterScreen from './screens/registerScreen';
 import InfoScreen from './screens/infoScreen';
 import TalkScreen from './screens/talkScreen';
+import talkWriteScreen from './screens/talkWriteScreen';
+import TalkViewScreen from './screens/talkViewScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -29,6 +31,13 @@ function GuestStackNavigator() {
 function MemberStackNavigator() {
 	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
 		<Stack.Screen name="Info" component={InfoScreen} options={{title: '프로필'}}/>
+	</Stack.Navigator>)
+}
+function TalkStackNavigator() {
+	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
+		<Stack.Screen name="Talk" component={TalkScreen} options={{title: '안녕'}}/>
+		<Stack.Screen name="TalkWrite" component={talkWriteScreen} options={{title: '안녕', presentation: 'modal', animation: 'fade_from_bottom'}}/>
+		<Stack.Screen name="TalkView" component={TalkViewScreen} options={{title: '안녕'}}/>
 	</Stack.Navigator>)
 }
 function AccountStackNavigator() {
@@ -61,8 +70,9 @@ export default function App() {
 							options={{tabBarIcon:({ focused, color,  }) => (
 								<Ionicons name={focused ? 'md-home-sharp' : 'md-home-outline' } color={color} size={24} />
 							)}}/>
-						<Tab.Screen name="Talk" component={TalkScreen} 
-							options={{tabBarIcon:({ focused, color,  }) => (
+						<Tab.Screen name="TalkStack" component={TalkStackNavigator} 
+							options={{headerShown: false, unmountOnBlur: true,
+								tabBarIcon:({ focused, color,  }) => (
 								<Ionicons name={focused ? 'newspaper-sharp' : 'newspaper-outline' } color={color} size={24} />
 							)}}/>
 						<Tab.Screen name="Account" component={AccountStackNavigator} 
