@@ -3,12 +3,13 @@ import { Alert, Button, ImageBackground, Keyboard, Pressable, StyleSheet, TextIn
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import defaultStyle from "./styleSheet";
+import { sendLoginRequest } from "../../util/account";
 
-import CustomText from "../Components/customText";
-import { sendLoginRequest } from "../util/account";
-import LoadingOverlay from "../Components/loadingOverlay";
-import { AppContext } from "../context/appContext";
+import defaultStyle from '../styleSheet';
+
+import { AppContext } from "../../context/appContext";
+import CustomText from "../../Components/customText";
+import LoadingOverlay from "../../Components/loadingOverlay";
 
 export default function LoginScreen() {
 	const navigation = useNavigation(AppContext);
@@ -28,20 +29,20 @@ export default function LoginScreen() {
 	}
 	const loginHandle = () => {
 		setLoading(true);
-        !async function () {
-            try {
-                const recv = await sendLoginRequest(email, password);
-                console.log(recv);
+		!async function () {
+			try {
+				const recv = await sendLoginRequest(email, password);
+				console.log(recv);
 				ctx.dispatch({type: 'login', payload: recv});
 				AsyncStorage.setItem('authentication', JSON.stringify(recv));
 				navigation.navigate("Home");
-            } catch (e) {
-                Alert.alert("with", "아이디 혹은 비밀번호를 확인하세요")
-                console.log(e);
-            }
-            setLoading(false);
-        }();
-    }
+			} catch (e) {
+				Alert.alert("with", "아이디 혹은 비밀번호를 확인하세요")
+				console.log(e);
+			}
+			setLoading(false);
+		}();
+	}
 
 	if(loading) {
 		return <LoadingOverlay />
@@ -50,7 +51,7 @@ export default function LoginScreen() {
 	return (<TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={[defaultStyle.wrap, {justifyContent: 'center'}]}>
 			<View style={{alignItems:'center'}}>
-				<ImageBackground source={require('../assets/images/login.png')} resizeMode="cover" style={{width: 240, height: 240}}  />
+				<ImageBackground source={require('../../assets/images/login.png')} resizeMode="cover" style={{width: 240, height: 240}}  />
 			</View>
 			<View style={defaultStyle.inputArea}>
 				<CustomText style={defaultStyle.inputTitle}>이메일</CustomText>

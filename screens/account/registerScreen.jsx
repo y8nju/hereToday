@@ -1,22 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import { Alert, Button, ImageBackground, Keyboard, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import defaultStyle from "./styleSheet";
+import defaultStyle from '../styleSheet';
 
-import { sendRegisterReq } from "../util/account";
-import CustomText from "../Components/customText";
-import LoadingOverlay from "../Components/loadingOverlay";
-import { AppContext } from "../context/appContext";
+import { sendRegisterReq } from "../../util/account";
 
-export default function RegisterScreen() {
+import { AppContext } from "../../context/appContext";
+import CustomText from "../../Components/customText";
+import LoadingOverlay from "../../Components/loadingOverlay";
+
+export default function RegisterScreen({navigation}) {
 	const [loading, setLoading] = useState(false);
 	const [email, setEmail] =useState();
 	const [pass, setPass] = useState();
 	const [passChk, setPassChk] = useState();
 	const [passchkText, setPassChkText] = useState('');
-	const navigation = useNavigation();
 	const ctx = useContext(AppContext);
 
 	useEffect(() => {
@@ -75,7 +74,7 @@ export default function RegisterScreen() {
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={[defaultStyle.wrap, {justifyContent: 'center'}]}>
 			<View style={{alignItems:'center'}}>
-				<ImageBackground source={require('../assets/images/signup.png')} resizeMode="cover" style={{width: 240, height: 240}}  />
+				<ImageBackground source={require('../../assets/images/signup.png')} resizeMode="cover" style={{width: 240, height: 240}}  />
 			</View>
 			<View style={defaultStyle.inputArea}>
 				<CustomText style={defaultStyle.inputTitle}>이메일</CustomText>
@@ -109,6 +108,3 @@ export default function RegisterScreen() {
 		</View>
 	</TouchableWithoutFeedback>);
 }
-const styles = StyleSheet.create({
-
-})

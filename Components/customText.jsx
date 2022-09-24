@@ -1,6 +1,6 @@
 import {Text} from "react-native";
 
-function CustomText({children, style, weight, type}) {
+export default function CustomText({children, style, weight, type}) {
 	if(!type) {
 		if(weight === 300) {
 			return (<Text style={[{fontFamily: 'SUIT-Ligh'}, style]}>{children}</Text>)
@@ -15,5 +15,3 @@ function CustomText({children, style, weight, type}) {
 		return (<Text style={[{fontFamily: 'Kyobo'}, style]}>{children}</Text>)
 	}
 }
-
-export default CustomText;

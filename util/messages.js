@@ -24,9 +24,7 @@ export async function messageUpdate(title, content, name, idToken) {
 	return response.data
 }
 
-export async function messageDelete(title, content, name, idToken) {
-	const response = await axios.delete(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/messages/${name}.json?auth=${idToken}`, {
-		title, content
-	})
+export async function messageDelete(name, idToken) {
+	const response = await axios.delete(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/messages/${name}.json?auth=${idToken}`)
 	return response.data
 }

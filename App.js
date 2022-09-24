@@ -10,12 +10,13 @@ import { useFonts } from 'expo-font';
 
 import { AppContext, AppContextProvider } from './context/appContext';
 import HomeScreen from './screens/homeScreen';
-import LoginScreen from './screens/loginScreen';
-import RegisterScreen from './screens/registerScreen';
-import InfoScreen from './screens/infoScreen';
-import TalkScreen from './screens/talkScreen';
-import talkWriteScreen from './screens/talkWriteScreen';
-import TalkViewScreen from './screens/talkViewScreen';
+import LoginScreen from './screens/account/loginScreen';
+import RegisterScreen from './screens/account/registerScreen';
+import InfoScreen from './screens/userInfo/infoScreen';
+import TalkScreen from './screens/talk/talkScreen';
+import talkWriteScreen from './screens/talk/talkWriteScreen';
+import TalkViewScreen from './screens/talk/talkViewScreen';
+import TalkUpdateScreen from './screens/talk/talkUpdateScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -35,9 +36,10 @@ function MemberStackNavigator() {
 }
 function TalkStackNavigator() {
 	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
-		<Stack.Screen name="Talk" component={TalkScreen} options={{title: '안녕'}}/>
-		<Stack.Screen name="TalkWrite" component={talkWriteScreen} options={{title: '안녕', presentation: 'modal', animation: 'fade_from_bottom'}}/>
-		<Stack.Screen name="TalkView" component={TalkViewScreen} options={{title: '안녕'}}/>
+		<Stack.Screen name="Talk" component={TalkScreen} options={{title: '이야기'}}/>
+		<Stack.Screen name="TalkWrite" component={talkWriteScreen} options={{title: '이야기 쓰기', presentation: 'modal', animation: 'fade_from_bottom'}}/>
+		<Stack.Screen name="TalkView" component={TalkViewScreen} options={{title: '이야기'}}/>
+		<Stack.Screen name="TalkUpdate" component={TalkUpdateScreen} options={{title: '이야기 수정하기', presentation: 'modal', animation: 'fade_from_bottom'}}/>
 	</Stack.Navigator>)
 }
 function AccountStackNavigator() {

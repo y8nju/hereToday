@@ -2,23 +2,16 @@ import { useContext, useEffect, useState } from 'react';
 import { FlatList, Keyboard, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import defaultStyle from './styleSheet';
+import { messageList } from '../../util/messages';
 
-import TalkItem from '../Components/talkItem';
-import { useNavigation } from '@react-navigation/native';
-import { messageList } from '../util/messages';
-import { AppContext } from '../context/appContext';
-import CustomText from '../Components/customText';
+import { AppContext } from '../../context/appContext';
+import TalkItem from '../../Components/talkItem';
 
-export default function TalkScreen({route}) {
+export default function TalkScreen({navigation, route}) {
 	console.log(route)
-	const navigation = useNavigation();
 	const [messages, setMessages] = useState([]);
 	const ctx = useContext(AppContext);
 	useEffect(() => {
-		navigation.setOptions({
-			title: "안녕"
-		});
 		onRead();
 	}, [route]);
 	const onAddItemHandle = ()=> {
