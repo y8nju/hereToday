@@ -11,7 +11,7 @@ const defaultStyle = StyleSheet.create({
 		marginBottom: 16
 	},
 	inputTitle: {
-		marginBottom: 4,
+		marginBottom: 8,
 	},
 	input: {
 		height: 40,

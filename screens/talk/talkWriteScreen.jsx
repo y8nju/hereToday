@@ -38,7 +38,7 @@ export default function TalkWriteScreen ({navigation}) {
 						}
 						setLoading(false);
 					}();
-					navigation.navigate("Talk", {loading: 'loading'});
+					navigation.navigate("Talk", {status: 'create'});
 				}
 			}
 		])

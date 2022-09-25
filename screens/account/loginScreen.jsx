@@ -35,7 +35,7 @@ export default function LoginScreen() {
 				console.log(recv);
 				ctx.dispatch({type: 'login', payload: recv});
 				AsyncStorage.setItem('authentication', JSON.stringify(recv));
-				navigation.navigate("Home");
+				navigation.navigate("Home", {status: 'login'});
 			} catch (e) {
 				Alert.alert("with", "아이디 혹은 비밀번호를 확인하세요")
 				console.log(e);

@@ -37,7 +37,7 @@ export default function TalkUpdateScreen({navigation, route}) {
 						}
 						setLoading(false);
 					}();
-					navigation.navigate("Talk", {loading: 'loading'});
+					navigation.navigate("Talk", {status: 'update'});
 				}
 			}
 		])
@@ -60,7 +60,7 @@ export default function TalkUpdateScreen({navigation, route}) {
 						}
 						setLoading(false);
 					}();
-					navigation.navigate("Talk", {loading: 'loading'});
+					navigation.navigate("Talk", {status: 'delete'});
 				}
 			}
 		])

@@ -57,7 +57,7 @@ export default function RegisterScreen({navigation}) {
 					console.log(recv); 
 					ctx.dispatch({type: 'login', payload: recv});
 					AsyncStorage.setItem('authentication', JSON.stringify(recv));
-					navigation.navigate('Home')
+					navigation.navigate('Home', {status: 'signup'})
 				} catch(e) {
 					Alert.alert('WITH', '회원가입이 정상적으로 이루어지지 않았습니다')
 					console.log(e.message);
@@ -99,7 +99,7 @@ export default function RegisterScreen({navigation}) {
 					value={passChk}
 					placeholder="비밀번호를 입력하세요"/>
 			</View>
-			<View>
+			<View style={{paddingHorizontal: 26}}>
 				<CustomText style={defaultStyle.chkText}>{passchkText}</CustomText>
 			</View>
 			<View style={defaultStyle.accountBtnArea}>

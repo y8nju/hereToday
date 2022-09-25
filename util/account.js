@@ -22,3 +22,17 @@ export async function sendLoginRequest(email, password) {
 	})
 	return response.data
 }
+
+export async function sendpassChangeRequest(idToken, password) {
+	const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${APP_KEY}`, {
+		idToken, password, returnSecureToken: true
+	})
+	return response.data
+}
+
+export async function sendDeleteRequest(idToken) {
+	const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${APP_KEY}`, {
+		idToken
+	})
+	return response.data
+}

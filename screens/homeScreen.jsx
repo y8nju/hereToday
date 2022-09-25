@@ -1,21 +1,35 @@
 import { useContext, useEffect } from "react";
-import { Button, Image, StyleSheet, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { Button, Image, StyleSheet, ToastAndroid, View } from "react-native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 
 import defaultStyle from "./styleSheet";
 
 import { AppContext } from "../context/appContext";
 import CustomText from "../Components/customText";
 
-export default function HomeScreen() {
+export default function HomeScreen({route}) {
 	const navigation = useNavigation(AppContext);
 	const ctx = useContext(AppContext);
+	console.log(route.params)
 	useEffect(()=> {
 		navigation.setOptions({
 			title: "WITH",
 			headerTitleStyle: {fontFamily: "Kyobo"}, 
-		})
-	})
+		});
+		if(route.params !== undefined) {
+			switch(route.params.status) {
+				case 'login':
+					navigation.dispatch(CommonActions.setParams({ status: '' }));
+					return ToastAndroid.show("어서오세요", ToastAndroid.SHORT);
+				case 'logout':
+					navigation.dispatch(CommonActions.setParams({ status: '' }));
+					return ToastAndroid.show("다음에 또 만나요", ToastAndroid.SHORT);
+				case 'signup':
+					navigation.dispatch(CommonActions.setParams({ status: '' }));
+					return ToastAndroid.show("회원가입이 완료되었습니다", ToastAndroid.SHORT);
+			}
+		}
+	}, [route])
 	const loginHandle = () => {
 		navigation.navigate("Account");
 	}

@@ -8,11 +8,23 @@ import { AppContext } from '../../context/appContext';
 import TalkItem from '../../Components/talkItem';
 
 export default function TalkScreen({navigation, route}) {
-	console.log(route)
 	const [messages, setMessages] = useState([]);
 	const ctx = useContext(AppContext);
 	useEffect(() => {
 		onRead();
+		if(route.params !== undefined) {
+			switch(route.params.status) {
+				case 'create':
+					navigation.dispatch(CommonActions.setParams({ status: '' }));
+					return ToastAndroid.show("이야기를 전달했어요", ToastAndroid.SHORT);
+				case 'update':
+					navigation.dispatch(CommonActions.setParams({ status: '' }));
+					return ToastAndroid.show("이야기를 수정했어요", ToastAndroid.SHORT);
+				case 'delete':
+					navigation.dispatch(CommonActions.setParams({ status: '' }));
+					return ToastAndroid.show("이야기를 지웠어요", ToastAndroid.SHORT);
+			}
+		}
 	}, [route]);
 	const onAddItemHandle = ()=> {
 		navigation.navigate('TalkWrite');
