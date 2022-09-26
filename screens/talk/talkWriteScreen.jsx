@@ -24,7 +24,7 @@ export default function TalkWriteScreen ({navigation}) {
 				text: '취소'
 			}, {
 				text: '완료',
-				onPress: () =>{
+				onPress: () =>{ 
 					setLoading(true);
 					!async function () {
 						const writer = ctx.auth.email;
