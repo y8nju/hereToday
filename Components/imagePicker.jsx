@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert, Image, Modal, Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
-import { launchCameraAsync, launchImageLibraryAsync, PermissionStatus, useCameraPermissions, useMediaLibraryPermissions } from "expo-image-picker";
+import { launchCameraAsync, launchImageLibraryAsync, PermissionStatus, useCameraPermissions, useMediaLibraryPermissions, getCameraPermissionsAsync } from "expo-image-picker";
 import { Ionicons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 
@@ -41,20 +41,16 @@ export default function ImagePicker() {
 			setModalVisible(false);
 	}
 	const takeFromCamera= async () => {
-		// console.log(cameraPermission);
-		if(cameraPermission.status === PermissionStatus.DENIED ||
-			cameraPermission.status === PermissionStatus.UNDETERMINED) {
-				try{
-					const resp = await requestCameraPermission();
-					console.log(resp);
-					if (!resp.granted) {
-						Alert.alert('WITH', '이 기능은 카메라 접근 권한이 필요해요');
-						return;
-					}
-				}catch(e) {
-					console.log(e);
-					return
-				}
+		console.log(cameraPermission);
+		const { status } = await getCameraPermissionsAsync();
+		console.log(status)
+		if(status !== 'granted') {
+			const resp = await requestCameraPermission();
+			console.log(resp);
+			if (!resp.granted) {
+				Alert.alert('WITH', '이 기능은 카메라 접근 권한이 필요해요');
+				return;
+			}
 		} 
 		const ressult = await launchCameraAsync({
 			quality: 0.5,

@@ -32,9 +32,10 @@ export default function LoginScreen() {
 		!async function () {
 			try {
 				const recv = await sendLoginRequest(email, password);
-				console.log(recv);
-				ctx.dispatch({type: 'login', payload: recv});
-				AsyncStorage.setItem('authentication', JSON.stringify(recv));
+				const userData = {...recv, password: password}
+				console.log(userData);
+				ctx.dispatch({type: 'login', payload: userData});
+				AsyncStorage.setItem('authentication', JSON.stringify(userData));
 				navigation.navigate("Home", {status: 'login'});
 			} catch (e) {
 				Alert.alert("with", "아이디 혹은 비밀번호를 확인하세요")
