@@ -19,7 +19,7 @@ export default function UserSettingScreen({navigation, route}) {
 					return ToastAndroid.show("비밀번호가 변경되었습니다", ToastAndroid.SHORT);
 			}
 		}
-	})
+	}, [route])
 	
 	const logoutHandle = () => {
 		Alert.alert("WITH", "로그아웃 하시겠습니까?", [
@@ -70,7 +70,7 @@ export default function UserSettingScreen({navigation, route}) {
 			</Pressable>
 			<Pressable onPress={accountDeleteHandle}>
 				<View style={styles.infoItemRow}>
-					<CustomText>서비스 탈퇴(예정)</CustomText>
+					<CustomText>서비스 탈퇴</CustomText>
 					<View style={{overflow: 'hidden', borderRadius: 8}}>
 							<Ionicons name="md-chevron-forward-sharp" size={18} color="#000" />
 					</View>

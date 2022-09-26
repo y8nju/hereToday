@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
-import { FlatList, Keyboard, Pressable, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { FlatList, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { messageList } from '../../util/messages';
 
 import { AppContext } from '../../context/appContext';
 import TalkItem from '../../Components/talkItem';
+import { CommonActions } from '@react-navigation/native';
 
 export default function TalkScreen({navigation, route}) {
 	const [messages, setMessages] = useState([]);
@@ -34,11 +35,10 @@ export default function TalkScreen({navigation, route}) {
 		messageList()
 		.then( (recv) => {
 			const messageArr = Object.keys(recv).map((name) => { return {name, ...recv[name]}});
-			console.log(messageArr)
+			messageArr.sort((a, b)=>a.createdAt - b.createdAt).reverse();
 			setMessages(messageArr);
 		})
 	}
-	console.log(messages instanceof Array);
 
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>

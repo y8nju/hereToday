@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
-import { Button, Image, StyleSheet, ToastAndroid, View } from "react-native";
-import { CommonActions, useNavigation } from "@react-navigation/native";
+import { Button, Image, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
+import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
 
 import defaultStyle from "./styleSheet";
 
@@ -11,6 +12,10 @@ export default function HomeScreen({route}) {
 	const navigation = useNavigation(AppContext);
 	const ctx = useContext(AppContext);
 	console.log(route.params)
+
+	/* navigation 이 가지고 있는 hook으로, 해당 화면에 focus된 상태인지 아닌지 확인해 볼 수 있다 */
+	const focused = useIsFocused();
+
 	useEffect(()=> {
 		navigation.setOptions({
 			title: "WITH",
@@ -33,6 +38,9 @@ export default function HomeScreen({route}) {
 	const loginHandle = () => {
 		navigation.navigate("Account");
 	}
+	const onAddItemHandle = ()=> {
+		navigation.navigate('PlaceAdd');
+	}
 	if(!ctx.auth) {
 		return (<View style={[defaultStyle.wrap, {justifyContent: 'center'}]}>
 			<View style={{alignItems:'center'}}>
@@ -43,11 +51,37 @@ export default function HomeScreen({route}) {
 			</View>
 		</View>)
 	}
-	return ( <View style={[defaultStyle.wrap]}>
-		{/* <Text>{ctx.auth.email}! </Text> */}
-		<CustomText style={{fontSize: 24}} type={'hand'}> 준비중</CustomText>
-	</View> );
+	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
+		<View style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
+			<View style={{flex:1}}>	
+			<CustomText> hey</CustomText>
+			</View>
+			{ctx.auth && <View style={styles.addBtn}>
+				<Pressable android_ripple={{color: '#fff'}} onPress={onAddItemHandle}
+					style={{flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+					<Ionicons name="add" size={32} color="#fff" />
+				</Pressable>
+			</View>}
+		</View>
+	</TouchableWithoutFeedback> );
 }
 const styles = StyleSheet.create({
-
+	addBtn: {
+		position:'absolute', 
+		width: 44,
+		height:44,
+		bottom: 12, 
+		right: 12, 
+		borderRadius: 50, 
+		backgroundColor: '#ffbf00',
+		overflow: 'hidden',
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 2,
+			height: 2,
+		},
+		shadowOpacity: 0.2,
+		shadowRadius: 0.3,
+		elevation: 2,
+	}
 })

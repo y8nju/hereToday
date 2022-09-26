@@ -9,6 +9,7 @@ import InfoNavScreen from "./infoNavScreen";
 
 export default function InfoScreen({navigation}) {
 	const ctx = useContext(AppContext);
+	console.log('ctxAuth', ctx.auth)
 
 	useEffect(() => {
 		navigation.setOptions({
