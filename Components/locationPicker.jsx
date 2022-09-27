@@ -1,58 +1,126 @@
-import { useState } from "react";
-import { Image, Modal, Pressable, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Button, Image, Modal, Pressable, StyleSheet, View } from "react-native";
 import { getCurrentPositionAsync, PermissionStatus, useForegroundPermissions } from "expo-location";
 import { Ionicons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import { createStaticMapUri } from "../util/maps";
+import { createStaticMapUri, getAdresses } from "../util/maps";
 
 import CustomText from "./customText";
+import MapView, { Marker } from "react-native-maps";
+import LoadingOverlay from "./loadingOverlay";
 
-export default function LocationPicker() {
+export default function LocationPicker({onPicked, initCoords}) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mapUri, setMapUri] = useState(null);
-
+	const [address, setAddress] = useState(null);
+	const [lat, setLat] = useState();
+	const [lng, setLng] = useState();
+	const [coordinate, setCoordinate] =useState(null);
+	useEffect(() => {
+		if(initCoords) {
+			console.log('init', initCoords)
+			!async function() {
+				const temp = createStaticMapUri(initCoords.latitude, initCoords.longitude);
+				const addr = await getAdresses(initCoords.latitude, initCoords.longitude);
+				setAddress(addr);
+				setMapUri(temp);
+				onPicked({ coordination: {latitude: initCoords.latitude, longitude:  initCoords.longitude}, address: addr  });
+			}();
+		}
+	}, [initCoords?.latitude, initCoords?.longitude])
+	const init ={
+		latitude: lat,
+		longitude: lng,
+		latitudeDelta: 0.01922,
+		longitudeDelta: 0.01421,
+	}
+	
 	const [locationPermission, requsetLocationPermission] = useForegroundPermissions();
-	const takeFromLocation = async () => {
+	const verifyPermition = async() => {
 		if(locationPermission.status == PermissionStatus.DENIED ||
 			locationPermission.status == PermissionStatus.UNDETERMINED) {
 			const permission = await requsetLocationPermission();
 			if(!permission.granted) {
-				return;
+				return flase;
 			}
 		}
-        getCurrentPositionAsync().then(result => {
-            console.log(result);
-			const temp = createStaticMapUri(result.coords.latitude, result.coords.longitude);
-			setMapUri(temp);
-			console.log(temp)
-        }).catch(e => {
-            console.log(e);
-        });
+		return true;
+	}
+	const takeFromLocation = async () => {
+		verifyPermition();
+		const result = await getCurrentPositionAsync();
+		console.log(result);
+		const temp = createStaticMapUri(result.coords.latitude, result.coords.longitude);
+		const addr = await getAdresses(result.coords.latitude, result.coords.longitude);
+		setAddress(addr);
+		setMapUri(temp);
+		onPicked({ coordination: {latitude: result.coords.latitude, longitude:  result.coords.longitude}, address: addr  });
+	}
+	const moveToChooseLocation = async() => {
+		setModalVisible(true);
+		verifyPermition();
+		const result = await getCurrentPositionAsync();
+		console.log(result)
+		setLat(result.coords.latitude);
+		setLng(result.coords.longitude);
+	}
+	const confirm = (lattiude, longitude) => {
+		if(!coordinate) {
+			console.log(lattiude, longitude)
+		} else {
+			setModalVisible(false);
+		}
+	}
+	const mapPressHandle = async({nativeEvent}) => {
+		console.log(nativeEvent)
+		setCoordinate(nativeEvent.coordinate);
+		setLat(nativeEvent.coordinate.latitude);
+		setLng(nativeEvent.coordinate.longitude);
+		const addr = await getAdresses(nativeEvent.coordinate.latitude, nativeEvent.coordinate.longitude);
+		setAddress(addr);
+		onPicked({ coordination: {latitude: nativeEvent.coordinate.latitude, longitude:  nativeEvent.coordinate.longitude}, address: addr  });
 	}
 	return(<View style={{marginTop: 20}}>
 		<View style={styles.contentArea}>
-		<Pressable style={{flex:1}} onPress={() => setModalVisible(true)}>
-			{mapUri ? <Image source={{uri: mapUri}} style={{flex: 1}} resizeMode={'cover'}/> :
-				<View style={{flex:1, justifyContent:'center', alignItems: 'center'}}>
-					<Foundation name="map" size={30} color="#777" /><CustomText style={{marginTop: 8, color: '#777'}} weight={600}>NO MAP AVAILABLE</CustomText>
+			<Pressable style={{flex:1}} onPress={moveToChooseLocation}>
+				{mapUri ? <View style={{flex: 1, position: 'relative'}}>
+					<Image source={{uri: mapUri}} style={{flex: 1}} resizeMode={'cover'}/>
+					<View style={styles.address}>
+						<Ionicons name="md-location-outline" size={18} color="#000" />
+						<CustomText style={{fontSize: 16}}>{address}</CustomText>
+					</View>
+				</View> :		
+					<View style={{flex:1, justifyContent:'center', alignItems: 'center'}}>
+						<Foundation name="map" size={30} color="#777" /><CustomText style={{marginTop: 8, color: '#777'}} weight={600}>NO MAP AVAILABLE</CustomText>
+					</View>
+				}
+				<View style={[styles.buttonWrap, {position: 'absolute', bottom: 8, right: 8, borderColor:'#ccc', borderWidth:1, backgroundColor: '#fff'}]}>
+					<Pressable android_ripple={{color: "#00000008"}} style={{padding: 8}} onPress={takeFromLocation}>
+						{({ pressed }) => (<>
+							<MaterialIcons name="my-location" size={24} color={pressed ? "#000" : '#777' } />
+						</>)}
+					</Pressable>
 				</View>
-			}
-			<View style={[styles.buttonWrap, {position: 'absolute', bottom: 8, right: 8, borderColor:'#ccc', borderWidth:1, backgroundColor: '#fff'}]}>
-				<Pressable android_ripple={{color: "#00000008"}} style={{padding: 8}} onPress={takeFromLocation}>
-					{({ pressed }) => (<>
-						<MaterialIcons name="my-location" size={24} color={pressed ? "#000" : '#777' } />
-					</>)}
-				</Pressable>
-			</View>
-		</Pressable>
+			</Pressable>
 		</View>
 		<Modal animationType="fade" transparent={true} visible={modalVisible}
 			onRequestClose={() => setModalVisible(!modalVisible)}>
 			<View style={styles.modalArea}>
 				<Pressable style={styles.touchArea} onPress={() => setModalVisible(!modalVisible)}></Pressable>
 				<View style={styles.modalContent}>
+					<View style={{flex: 1, alignItems: 'center', position: 'relative'}}>
+					{lng ? <>
+						<MapView style={{width: '100%', height:'100%'}} initialRegion={init} onPress={mapPressHandle } >
+							{coordinate && <Marker coordinate={coordinate} />} 
+							{/* 마커 기본 위치 넣어주기 */}
+						</MapView>
+						<View style={{width: '84%', position: 'absolute', bottom: 40, }}>
+							<Button title="확인" color="#ffbf00" onPress={ () => confirm(lng, lat) }/>
+						</View>
+						</> : <LoadingOverlay />}
+					</View>
 				</View>
 			</View>
 		</Modal>
@@ -82,25 +150,21 @@ const styles = StyleSheet.create({
 	modalContent: {
 		marginTop: 'auto',
 		width: '100%',
-		height: '50%',
+		height: '80%',
 		borderTopLeftRadius: 32,
 		borderTopRightRadius: 32,
 		backgroundColor: '#fff',
-	},
-	buttonArea: {
-		flexDirection:'row', 
-		justifyContent: 'center', 
-		marginTop: 10
-	},
-	buttonWrap: {
-		borderRadius: 4,
 		overflow: 'hidden'
 	},
-	button: {
+	address: {
 		flexDirection: 'row',
-		alignItems: 'center',
-		marginHorizontal: 8,
-		paddingVertical: 4,
-		paddingHorizontal: 8
+		alignItems: 'flex-end',
+		position: 'absolute',
+		bottom: 4,
+		left: 4,
+		backgroundColor: '#fff',
+		paddingVertical: 2,
+		paddingHorizontal: 4,
+		borderRadius: 4
 	}
 })

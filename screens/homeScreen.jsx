@@ -53,8 +53,8 @@ export default function HomeScreen({route}) {
 	}
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
-			<View style={{flex:1}}>	
-			<CustomText> hey</CustomText>
+			<View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>	
+			<CustomText type="hand" style={{fontSize: 32}}> 준비중 </CustomText>
 			</View>
 			{ctx.auth && <View style={styles.addBtn}>
 				<Pressable android_ripple={{color: '#fff'}} onPress={onAddItemHandle}

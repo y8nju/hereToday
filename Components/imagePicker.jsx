@@ -6,7 +6,7 @@ import { Foundation } from '@expo/vector-icons';
 
 import CustomText from "./customText";
 
-export default function ImagePicker() {
+export default function ImagePicker({onPicked}) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [imageUri, setImageUri] = useState();
 	// 카메라 접근 권한 확인
@@ -28,16 +28,22 @@ export default function ImagePicker() {
 					return
 				}
 			}
-			const ressult = await launchImageLibraryAsync({
+			const result = await launchImageLibraryAsync({
 				quality: 0.5,
 				allowsEditing: true,
 				aspect: [16, 9],	// 비율
+				exif: true,	// 사진에 저장된 정보를 가져옴
 			});
-			if(!ressult.cancelled) {
-				setImageUri(ressult.uri)
+			if(!result.cancelled) {
+				// 사진에 GPS 정보가 저장되어 있으면, 위치를 얻어낼 수 있다
+				const lat = result.exif.GPSLatitude;
+				const lng = result.exif.GPSLongitude;
+				setImageUri(result.uri);
+				onPicked(result.uri);	// 부모한테 이미지 넘기기
+				console.log(result.exif);
 			}
-			console.log(ressult);
-			setImageUri(ressult.uri);
+			console.log(result);
+			setImageUri(result.uri);
 			setModalVisible(false);
 	}
 	const takeFromCamera= async () => {
@@ -52,16 +58,18 @@ export default function ImagePicker() {
 				return;
 			}
 		} 
-		const ressult = await launchCameraAsync({
+		const result = await launchCameraAsync({
 			quality: 0.5,
 			allowsEditing: true,
 			aspect: [16, 9],	// 비율
 		});
-		if(!ressult.cancelled) {
-			setImageUri(ressult.uri)
+		if(!result.cancelled) {
+			setImageUri(result.uri);
+			onPicked(result.uri);
 		}
-		console.log(ressult);
-		setImageUri(ressult.uri);
+		console.log(result);
+		setImageUri(result.uri);
+		onPicked(result.uri);
 		setModalVisible(false);
 	}
 	return(<View style={{marginTop: 10}}>
