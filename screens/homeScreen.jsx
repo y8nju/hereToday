@@ -11,7 +11,7 @@ import CustomText from "../Components/customText";
 export default function HomeScreen({route}) {
 	const navigation = useNavigation(AppContext);
 	const ctx = useContext(AppContext);
-	console.log(route.params)
+	// console.log(route.params)
 
 	/* navigation 이 가지고 있는 hook으로, 해당 화면에 focus된 상태인지 아닌지 확인해 볼 수 있다 */
 	const focused = useIsFocused();

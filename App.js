@@ -31,9 +31,8 @@ function GuestStackNavigator() {
 			headerTitleStyle: {fontFamily: "SUIT-Regular"}, 
 			animation: 'slide_from_right'
 		}}>
-		<Stack.Screen name="Login" component={LoginScreen} unmountOnBlur={false}/>
-		<Stack.Screen name="Register" component={RegisterScreen} unmountOnBlur={false} />
-		<Stack.Screen name="WithdrawSuccess" component={WithdrawSuccessScreen} options={{title: '탈퇴 완료'}} unmountOnBlur={false}/>
+		<Stack.Screen name="Login" component={LoginScreen}/>
+		<Stack.Screen name="Register" component={RegisterScreen} />
 	</Stack.Navigator>)
 }
 function MemberStackNavigator() {
@@ -56,6 +55,7 @@ function HomeStackNavigator() {
 	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
 		<Stack.Screen name="Home" component={HomeScreen} options={{title: 'WITH'}}/>
 		<Stack.Screen name="PlaceAdd" component={PlaceAddScreen} options={{title: '장소 공유하기', presentation: 'modal', animation: 'fade_from_bottom'}}/>
+		<Stack.Screen name="WithdrawSuccess" component={WithdrawSuccessScreen} options={{title: '탈퇴 완료'}}/>
 		{/* <Stack.Screen name="TalkView" component={TalkViewScreen} options={{title: '이야기'}}/> */}
 	</Stack.Navigator>)
 }
@@ -69,7 +69,7 @@ function AccountStackNavigator() {
 
 export default function App() {
 	const ctx = useContext(AppContext);
-	const [isCtx, setIsCtx] = useState(false);
+	const [isCtx, setIsCtx] = useState(null);
 	const [fontLoaded] = useFonts({
 		'SUIT-Light': require('./assets/fonts/SUIT-Light.ttf'),	// 300
 		'SUIT-Regular': require('./assets/fonts/SUIT-Regular.ttf'),	// 400
@@ -77,14 +77,15 @@ export default function App() {
 		'SUIT-ExtraBold': require('./assets/fonts/SUIT-ExtraBold.ttf'),	// 800
 		'Kyobo': require('./assets/fonts/KyoboHandwriting.ttf'),
 	})
-	useEffect(()=> {
-		if(ctx.auth == null || ctx.auth == undefined) {
-			setIsCtx(false);
-		}else {
-			setIsCtx(true);
-		}
-		console.log('isCtx', isCtx)
-	})
+	// useEffect(()=> {
+	// 	console.log(ctx.auth)
+	// 	if(ctx.auth) {
+	// 		setIsCtx('unmountOnBlur: true');
+	// 	}else {
+	// 		setIsCtx('unmountOnBlur: false');
+	// 	}
+	// 	console.log('isCtx', isCtx)
+	// }, [ctx])
 	if(!fontLoaded) {
 		return <></>
 	}
@@ -98,18 +99,18 @@ export default function App() {
 					}}>
 						<Tab.Screen name="HomeStack" component={HomeStackNavigator} 
 							options={{headerShown: false,
-								tabBarIcon:({ focused, color,  }) => (
-								<Ionicons name={focused ? 'md-home-sharp' : 'md-home-outline' } color={color} size={24} />
+							tabBarIcon:({ focused, color,  }) => (
+							<Ionicons name={focused ? 'md-home-sharp' : 'md-home-outline' } color={color} size={24} />
 						)}}/>
 						<Tab.Screen name="TalkStack" component={TalkStackNavigator} 
 							options={{headerShown: false, unmountOnBlur: true,
-								tabBarIcon:({ focused, color,  }) => (
-								<Ionicons name={focused ? 'newspaper-sharp' : 'newspaper-outline' } color={color} size={24} />
+							tabBarIcon:({ focused, color,  }) => (
+							<Ionicons name={focused ? 'newspaper-sharp' : 'newspaper-outline' } color={color} size={24} />
 						)}}/>
 						<Tab.Screen name="Account" component={AccountStackNavigator} 
-							options={{headerShown: false, unmountOnBlur: {isCtx},
-								tabBarIcon: ({focused, color})=> (
-								<Ionicons name={focused ? 'md-person-circle' : 'md-person-circle-outline'} color={color} size={26}  />
+							options={{headerShown: false, unmountOnBlur: true,
+							tabBarIcon: ({focused, color})=> (
+							<Ionicons name={focused ? 'md-person-circle' : 'md-person-circle-outline'} color={color} size={26}  />
 						)}} />
 					</Tab.Navigator>
 				</NavigationContainer>
