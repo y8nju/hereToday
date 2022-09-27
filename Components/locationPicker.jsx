@@ -63,17 +63,17 @@ export default function LocationPicker({onPicked, initCoords, plceImageLocation}
 	
 	const [locationPermission, requsetLocationPermission] = useForegroundPermissions();
 	const verifyPermition = async() => {
-		if(locationPermission.status == PermissionStatus.DENIED ||
-			locationPermission.status == PermissionStatus.UNDETERMINED) {
+		if(locationPermission.status !== 'granted') {
 			const permission = await requsetLocationPermission();
 			if(!permission.granted) {
 				return flase;
 			}
+			return true;
 		}
-		return true;
 	}
 	const takeFromLocation = async () => {
 		verifyPermition();
+		console.log(locationPermission);
 		const result = await getCurrentPositionAsync();
 		console.log(result);
 		const temp = createStaticMapUri(result.coords.latitude, result.coords.longitude);
@@ -137,8 +137,7 @@ export default function LocationPicker({onPicked, initCoords, plceImageLocation}
 					<View style={{flex: 1, alignItems: 'center', position: 'relative'}}>
 					{lng ? <>
 						<MapView style={{width: '100%', height:'100%'}} initialRegion={init} onPress={mapPressHandle } >
-							{coordinate && <Marker coordinate={coordinate} />} 
-							{/* 마커 기본 위치 넣어주기 */}
+							{coordinate && <Marker coordinate={coordinate} />}
 						</MapView>
 						<View style={{width: '84%', position: 'absolute', bottom: 40, }}>
 							<Button title="확인" color="#ffbf00" onPress={ () => confirm(lng, lat) }/>

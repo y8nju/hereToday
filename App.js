@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -22,6 +22,7 @@ import PassChangeScreen from './screens/account/passChangeScreen';
 import WithdrawScreen from './screens/account/withdrawScreen';
 import WithdrawSuccessScreen from './screens/account/withdrawSuccessScreen';
 import PlaceAddScreen from './screens/content/placeAddScreen';
+import Splash from './Components/splash';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -66,7 +67,6 @@ function AccountStackNavigator() {
 		{ctx.auth ? <MemberStackNavigator /> : <GuestStackNavigator />}
 	</>)
 }
-
 export default function App() {
 	const ctx = useContext(AppContext);
 	const [isCtx, setIsCtx] = useState(null);
@@ -87,7 +87,7 @@ export default function App() {
 	// 	console.log('isCtx', isCtx)
 	// }, [ctx])
 	if(!fontLoaded) {
-		return <></>
+		return <Splash />
 	}
 	return (<>
 			<StatusBar style='auto' />
