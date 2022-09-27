@@ -29,7 +29,7 @@ export default function WithdrawScreen({navigation}) {
 	}
 
 	const accountDeleteHandle = () => {
-		Alert.alert("WITH", "서비스를 탈퇴 하실건가요?", [
+		Alert.alert("오늘여기", "서비스를 탈퇴 하실건가요?", [
 			{
 				text: '취소'
 			}, {
@@ -45,7 +45,7 @@ export default function WithdrawScreen({navigation}) {
 							navigation.navigate('WithdrawSuccess', {status: 'success'})
 							// 마운트 확인
 						} catch(e) {
-							Alert.alert('WITH', '탈퇴가 정상적으로 이루어지지 않았습니다')
+							Alert.alert('오늘여기', '탈퇴가 정상적으로 이루어지지 않았습니다')
 							console.log(e.message);
 						}
 						setLoading(false);
@@ -67,11 +67,11 @@ export default function WithdrawScreen({navigation}) {
 					</CustomText>
 					<View style={{marginTop: 24}}>
 						<CustomText style={styles.withdrawText}>
-							· 탈퇴 시, WITH 서비스 이용이 불가합니다.
+							· 탈퇴 시, 오늘여기 서비스 이용이 불가합니다.
 						</CustomText>
 						<CustomText style={styles.withdrawText}>
-							· WITH 서비스를 탈퇴하더라도 등록하신 컨텐츠는 유지됩니다.{'\n'}
-							WITH 서비스에 등록한 컨텐츠 삭제를 원하시는 경우, 탈퇴 전 삭제해 주시기 바랍니다
+							· 오늘여기 서비스를 탈퇴하더라도 등록하신 컨텐츠는 유지됩니다.{'\n'}
+							오늘여기 서비스에 등록한 컨텐츠 삭제를 원하시는 경우, 탈퇴 전 삭제해 주시기 바랍니다
 						</CustomText>
 					</View>
 				</View>

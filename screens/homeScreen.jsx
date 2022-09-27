@@ -17,10 +17,6 @@ export default function HomeScreen({route}) {
 	const focused = useIsFocused();
 
 	useEffect(()=> {
-		navigation.setOptions({
-			title: "WITH",
-			headerTitleStyle: {fontFamily: "Kyobo"}, 
-		});
 		if(route.params !== undefined) {
 			switch(route.params.status) {
 				case 'login':
@@ -31,7 +27,10 @@ export default function HomeScreen({route}) {
 					return ToastAndroid.show("다음에 또 만나요", ToastAndroid.SHORT);
 				case 'signup':
 					navigation.dispatch(CommonActions.setParams({ status: '' }));
-					return ToastAndroid.show("회원가입이 완료되었습니다", ToastAndroid.SHORT);
+					return ToastAndroid.show("만나서 반가워요", ToastAndroid.SHORT);
+				case 'create':
+					navigation.dispatch(CommonActions.setParams({ status: '' }));
+					return ToastAndroid.show("여기를 공유했어요", ToastAndroid.SHORT);
 			}
 		}
 	}, [route])

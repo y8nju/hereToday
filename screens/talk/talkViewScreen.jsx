@@ -7,6 +7,7 @@ import { messageDetail } from "../../util/messages";
 
 import { AppContext } from "../../context/appContext";
 import CustomText from "../../Components/customText";
+import HeaderRightButton from "../../Components/headerRightButton";
 
 export default function TalkViewScreen({navigation, route}) {
 	
@@ -18,19 +19,12 @@ export default function TalkViewScreen({navigation, route}) {
 	useEffect(() => {
 		if(data.writer === ctx.auth.email){
 			navigation.setOptions({
-				headerRight: () => <UpdateBtn />
+				headerRight: () => <HeaderRightButton onPress={updateHandle}>수정</HeaderRightButton>
 			})
 		}
 	})
 	const updateHandle = () => {
 		navigation.navigate('TalkUpdate', {data: data});
-	}
-	function UpdateBtn() {
-		return (<View style={{overflow: 'hidden', borderRadius: 8}}>
-			<Pressable android_ripple={{color: "#00000008"}} style={{paddingHorizontal: 4, paddingVertical: 8}} onPress={updateHandle}>
-				<CustomText>수정</CustomText>
-			</Pressable>
-		</View>)
 	}
 
 	return(<View style={[defaultStyle.wrap, {backgroundColor: '#fff'}]}>

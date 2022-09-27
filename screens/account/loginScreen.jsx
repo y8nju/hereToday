@@ -38,7 +38,7 @@ export default function LoginScreen() {
 				AsyncStorage.setItem('authentication', JSON.stringify(userData));
 				navigation.navigate("Home", {status: 'login'});
 			} catch (e) {
-				Alert.alert("with", "아이디 혹은 비밀번호를 확인하세요")
+				Alert.alert("오늘여기", "아이디 혹은 비밀번호를 확인하세요")
 				console.log(e);
 			}
 			setLoading(false);

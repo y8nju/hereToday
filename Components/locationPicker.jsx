@@ -32,7 +32,7 @@ export default function LocationPicker({onPicked, initCoords, plceImageLocation}
 	}, [initCoords?.latitude, initCoords?.longitude])
 	useEffect(()=> {
 		if(plceImageLocation) {
-			Alert.alert('WITH', '사진의 위치 정보를 이용하여, 지도를 추가할까요?', [
+			Alert.alert('오늘여기', '사진의 위치 정보를 이용하여, 지도를 추가할까요?', [
 				{ text: '취소' },
 				{ text: '확인', 
 					onPress: () => {

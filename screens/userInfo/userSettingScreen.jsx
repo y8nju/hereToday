@@ -22,7 +22,7 @@ export default function UserSettingScreen({navigation, route}) {
 	}, [route])
 	
 	const logoutHandle = () => {
-		Alert.alert("WITH", "로그아웃 하시겠습니까?", [
+		Alert.alert("오늘여기", "로그아웃 하시겠습니까?", [
 			{
 				text: '취소'
 			}, {

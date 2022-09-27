@@ -23,14 +23,14 @@ export default function PassChangeScreen({navigation}) {
 	}, [pass]);
 
 	const passChangeHandele = () => {
-		Alert.alert("WITH", "입력하신 비밀번호로 저장할까요?", [
+		Alert.alert("오늘여기", "입력하신 비밀번호로 저장할까요?", [
 			{
 				text: '취소'
 			}, {
 				text: '저장',
 				onPress: () =>{ 
 					if(pass.length < 6) {
-						Alert.alert('WITH', '비밀번호는 6자 이상 입력해주세요')
+						Alert.alert('오늘여기', '비밀번호는 6자 이상 입력해주세요')
 					} else {
 						setLoading(true);
 						!async function( ) {
@@ -41,7 +41,7 @@ export default function PassChangeScreen({navigation}) {
 								console.log(recv); 
 								navigation.navigate('UserSetting', {status: 'passChange'})
 							} catch(e) {
-								Alert.alert('WITH', '비밀번호가 정상적으로 변경되지 않았습니다')
+								Alert.alert('오늘여기', '비밀번호가 정상적으로 변경되지 않았습니다')
 								console.log(e.message);
 							}
 							setLoading(false);

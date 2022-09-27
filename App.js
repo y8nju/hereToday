@@ -53,8 +53,8 @@ function TalkStackNavigator() {
 }
 function HomeStackNavigator() {
 	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
-		<Stack.Screen name="Home" component={HomeScreen} options={{title: 'WITH'}}/>
-		<Stack.Screen name="PlaceAdd" component={PlaceAddScreen} options={{title: '장소 공유하기', presentation: 'modal', animation: 'fade_from_bottom'}}/>
+		<Stack.Screen name="Home" component={HomeScreen} options={{title: '오늘여기'}}/>
+		<Stack.Screen name="PlaceAdd" component={PlaceAddScreen} options={{title: '여기 공유하기', presentation: 'modal', animation: 'fade_from_bottom'}}/>
 		<Stack.Screen name="WithdrawSuccess" component={WithdrawSuccessScreen} options={{title: '탈퇴 완료'}}/>
 		{/* <Stack.Screen name="TalkView" component={TalkViewScreen} options={{title: '이야기'}}/> */}
 	</Stack.Navigator>)

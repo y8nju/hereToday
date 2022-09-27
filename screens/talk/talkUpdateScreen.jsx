@@ -19,7 +19,7 @@ export default function TalkUpdateScreen({navigation, route}) {
 	const [contentInp, setContentInp] = useState(content);
 
 	const updateHandle = () => {
-		Alert.alert("WITH", "이야기를 수정할까요?", [
+		Alert.alert("오늘여기", "이야기를 수정할까요?", [
 			{
 				text: '취소'
 			}, {
@@ -44,7 +44,7 @@ export default function TalkUpdateScreen({navigation, route}) {
 	}
 
 	const deleteHandle = () => {
-		Alert.alert("WITH", "이야기를 지울까요?", [
+		Alert.alert("오늘여기", "이야기를 지울까요?", [
 			{
 				text: '취소'
 			}, {

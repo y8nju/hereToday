@@ -6,6 +6,7 @@ import defaultStyle from '../styleSheet';
 import { AppContext } from "../../context/appContext";
 import { messageWrite } from "../../util/messages";
 import CustomText from "../../Components/customText";
+import HeaderRightButton from "../../Components/headerRightButton";
 
 export default function TalkWriteScreen ({navigation}) {
 	const [loading, setLoading] = useState(false);
@@ -15,11 +16,11 @@ export default function TalkWriteScreen ({navigation}) {
 	useEffect(() => {
 		navigation.setOptions({
 			title: "안녕 글쓰기",
-			headerRight: ()=> { return <WirteBtn />}
+			headerRight: ()=> <HeaderRightButton onPress={writeHandle}>완료</HeaderRightButton>
 		});
 	}, [titleInp, contentInp]);
 	const writeHandle = () => {
-		Alert.alert("WITH", "이야기를 전달할까요?", [
+		Alert.alert("오늘여기", "이야기를 전달할까요?", [
 			{
 				text: '취소'
 			}, {
@@ -42,13 +43,6 @@ export default function TalkWriteScreen ({navigation}) {
 				}
 			}
 		])
-	}
-	function WirteBtn() {
-		return (<View style={{overflow: 'hidden', borderRadius: 8}}>
-			<Pressable android_ripple={{color: "#00000008"}} style={{paddingHorizontal: 4, paddingVertical: 8}} onPress={writeHandle}>
-				<CustomText>완료</CustomText>
-			</Pressable>
-		</View>)
 	}
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={[defaultStyle.wrap, {backgroundColor: '#fff'}]}>

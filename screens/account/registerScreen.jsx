@@ -43,12 +43,12 @@ export default function RegisterScreen({navigation}) {
 	const registerHandle = () => {
 
 		if(pass !== passChk) {
-			Alert.alert('WITH', '비밀번호가 일치하지 않습니다')
+			Alert.alert('오늘여기', '비밀번호가 일치하지 않습니다')
 		}else if(pass.length < 6) {
-			Alert.alert('WITH', '비밀번호는 6자 이상 입력해주세요')
+			Alert.alert('오늘여기', '비밀번호는 6자 이상 입력해주세요')
 
 		}else if(!(/^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email))) {
-			Alert.alert('WITH', '이메일 형식이 아닙니다')
+			Alert.alert('오늘여기', '이메일 형식이 아닙니다')
 		}else {
 			setLoading(true);
 			!async function( ) {
@@ -59,7 +59,7 @@ export default function RegisterScreen({navigation}) {
 					AsyncStorage.setItem('authentication', JSON.stringify(recv));
 					navigation.navigate('Home', {status: 'signup'})
 				} catch(e) {
-					Alert.alert('WITH', '회원가입이 정상적으로 이루어지지 않았습니다')
+					Alert.alert('오늘여기', '회원가입이 정상적으로 이루어지지 않았습니다')
 					console.log(e.message);
 				}
 				setLoading(false);

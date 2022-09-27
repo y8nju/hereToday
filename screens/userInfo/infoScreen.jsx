@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { AppContext } from "../../context/appContext";
 import InfoNavScreen from "./infoNavScreen";
+import HeaderRightButton from "../../Components/headerRightButton";
 
 export default function InfoScreen({navigation}) {
 	const ctx = useContext(AppContext);
@@ -15,11 +16,9 @@ export default function InfoScreen({navigation}) {
 			title: ctx.auth.email,
 			headerTitleStyle: {fontSize: 16},
 			headerRight: ()=> {
-				return(<View style={{overflow: 'hidden', borderRadius: 8}}>
-					<Pressable android_ripple={{color: "#00000008"}} style={{padding: 4}} onPress={userSettingHandle}>
-						<Ionicons name="md-menu-sharp" color="#000" size={24} />
-					</Pressable>
-				</View>)
+				return(<HeaderRightButton onPress={userSettingHandle}>
+					<Ionicons name="md-menu-sharp" color="#000" size={24} />
+				</HeaderRightButton>)
 			}
 		});
 	}, []);

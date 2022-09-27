@@ -20,7 +20,7 @@ export default function ImagePicker({onPicked}) {
 					const resp = await requestImagePermission();
 					console.log(resp);
 					if (!resp.granted) {
-						Alert.alert('WITH', '이 기능은 갤러리 접근 권한이 필요해요');
+						Alert.alert('오늘여기', '이 기능은 갤러리 접근 권한이 필요해요');
 						return;
 					}
 				}catch(e) {
@@ -58,7 +58,7 @@ export default function ImagePicker({onPicked}) {
 			const resp = await requestCameraPermission();
 			console.log(resp);
 			if (!resp.granted) {
-				Alert.alert('WITH', '이 기능은 카메라 접근 권한이 필요해요');
+				Alert.alert('오늘여기', '이 기능은 카메라 접근 권한이 필요해요');
 				return;
 			}
 		} 
