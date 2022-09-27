@@ -38,8 +38,12 @@ export default function ImagePicker({onPicked}) {
 				// 사진에 GPS 정보가 저장되어 있으면, 위치를 얻어낼 수 있다
 				const lat = result.exif.GPSLatitude;
 				const lng = result.exif.GPSLongitude;
+				if(lat !== 0 && lng !==0 || lat !== undefined && lng !== undefined) {
+					onPicked({uri: result.uri, coordination: {latitude: result.exif.GPSLatitude, longitude:  result.exif.GPSLongitude}})
+				}else {
+					onPicked({uri: result.uri});	// 부모한테 이미지 넘기기
+				}
 				setImageUri(result.uri);
-				onPicked(result.uri);	// 부모한테 이미지 넘기기
 				console.log(result.exif);
 			}
 			console.log(result);
@@ -64,8 +68,15 @@ export default function ImagePicker({onPicked}) {
 			aspect: [16, 9],	// 비율
 		});
 		if(!result.cancelled) {
+			// 사진에 GPS 정보가 저장되어 있으면, 위치를 얻어낼 수 있다
+			const lat = result.exif.GPSLatitude;
+			const lng = result.exif.GPSLongitude;
+			if(lat !== 0 && lng !==0 || lat !== undefined && lng !== undefined) {
+				onPicked({uri: result.uri, coordination: {latitude: result.exif.GPSLatitude, longitude:  result.exif.GPSLongitude}})
+			}else {
+				onPicked({uri: result.uri});	// 부모한테 이미지 넘기기
+			}
 			setImageUri(result.uri);
-			onPicked(result.uri);
 		}
 		console.log(result);
 		setImageUri(result.uri);

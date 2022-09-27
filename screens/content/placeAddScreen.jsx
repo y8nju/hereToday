@@ -1,11 +1,10 @@
-import { Keyboard, Modal, Pressable, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Keyboard,StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
 
 import defaultStyle from "../styleSheet";
 
-import CustomText from "../../Components/customText";
 import ImagePicker from "../../Components/imagePicker";
 import LocationPicker from "../../Components/locationPicker";
-import { useEffect, useState } from "react";
 
 export default function PlaceAddScreen() {
 	
@@ -14,15 +13,24 @@ export default function PlaceAddScreen() {
 	const [placeInfo, setPlaceInfo] = useState('');	// 장소 정보
 	const [placeImage, setPlaceImage] = useState(null);	// 장소 이미지
 	const [placeLocation, setPlaceLocation] = useState();	// 장소 위치
+	const [plceImageLocation, setPlaceImageLocation] = useState(null);
 	useEffect(()=> {
 		console.log('placeName: ', placeName, '\n placeInfo :', placeInfo, '\n placeImage: ', placeImage, '\n placeLocation: ', placeLocation)
-	},[placeName, placeInfo, placeImage, placeLocation ])
+		
+		console.log(plceImageLocation);
+	},[placeName, placeInfo, placeImage, placeLocation, plceImageLocation ])
 	
 	const modalCloseHandle = () => {
 		setModal(false);
 	}
 	const imagePickeredHandle = (uri) => {
-		setPlaceImage(uri)
+		if(uri !== undefined) {
+			console.log(uri)
+			setPlaceImage(uri.uri)
+			if(uri.coordination) {
+				setPlaceImageLocation(uri.coordination);
+			}
+		}
 	}
 	const locationPickeredHandle = (coord) => {
 		setPlaceLocation(coord)
@@ -50,6 +58,7 @@ export default function PlaceAddScreen() {
 				</View>
 				<ImagePicker onPicked={imagePickeredHandle}/>
 				<LocationPicker onPicked={locationPickeredHandle}
+					plceImageLocation={plceImageLocation}
 					initCoords={placeLocation?.coordination}/>
 			</View>
 		</View>

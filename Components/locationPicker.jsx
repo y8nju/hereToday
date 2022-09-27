@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Image, Modal, Pressable, StyleSheet, View } from "react-native";
+import { Alert, Button, Image, Modal, Pressable, StyleSheet, View } from "react-native";
 import { getCurrentPositionAsync, PermissionStatus, useForegroundPermissions } from "expo-location";
+import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -8,16 +9,15 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { createStaticMapUri, getAdresses } from "../util/maps";
 
 import CustomText from "./customText";
-import MapView, { Marker } from "react-native-maps";
 import LoadingOverlay from "./loadingOverlay";
 
-export default function LocationPicker({onPicked, initCoords}) {
+export default function LocationPicker({onPicked, initCoords, plceImageLocation}) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mapUri, setMapUri] = useState(null);
 	const [address, setAddress] = useState(null);
 	const [lat, setLat] = useState();
 	const [lng, setLng] = useState();
-	const [coordinate, setCoordinate] =useState(null);
+	const [coordinate, setCoordinate] = useState(null);
 	useEffect(() => {
 		if(initCoords) {
 			console.log('init', initCoords)
@@ -30,6 +30,30 @@ export default function LocationPicker({onPicked, initCoords}) {
 			}();
 		}
 	}, [initCoords?.latitude, initCoords?.longitude])
+	useEffect(()=> {
+		if(plceImageLocation) {
+			Alert.alert('WITH', '사진의 위치 정보를 이용하여, 지도를 추가할까요?', [
+				{ text: '취소' },
+				{ text: '확인', 
+					onPress: () => {
+						setModalVisible(true);
+						verifyPermition();
+						setLat(plceImageLocation.latitude);
+						setLng(plceImageLocation.longitude);
+						setCoordinate(plceImageLocation);
+						
+						!async function() {
+							const temp = createStaticMapUri(plceImageLocation.latitude, plceImageLocation.longitude);
+							const addr = await getAdresses(plceImageLocation.latitude, plceImageLocation.longitude);
+							setAddress(addr);
+							setMapUri(temp);
+							onPicked({ coordination: {latitude: plceImageLocation.latitude, longitude:  plceImageLocation.longitude}, address: addr  });
+						}();
+					}
+				}
+			])
+		}
+	}, [plceImageLocation]);
 	const init ={
 		latitude: lat,
 		longitude: lng,
