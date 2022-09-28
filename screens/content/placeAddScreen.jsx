@@ -9,7 +9,6 @@ import { AppContext } from "../../context/appContext";
 import ImagePicker from "../../Components/imagePicker";
 import LocationPicker from "../../Components/locationPicker";
 import HeaderRightButton from "../../Components/headerRightButton";
-import LocationPicker2 from "../../Components/locationPicker2";
 
 export default function PlaceAddScreen({navigation}) {
 	const [loading, setLoading] = useState(false);
@@ -100,7 +99,7 @@ export default function PlaceAddScreen({navigation}) {
 					/>
 				</View>
 				<ImagePicker onPicked={imagePickeredHandle}/>
-				<LocationPicker2 onPicked={locationPickeredHandle}
+				<LocationPicker onPicked={locationPickeredHandle}
 					plceImageLocation={plceImageLocation}
 					initCoords={placeLocation?.coordination}/>
 			</View>

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Dimensions, Image, Modal, Pressable, StyleSheet, View } from "react-native";
+import { Dimensions, Image, Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
 import defaultStyle from '../styleSheet/index';
@@ -60,7 +60,22 @@ export default function PlaceViewScreen({navigation, route}) {
 					<CustomText style={{fontSize: 16, color: "#eee", marginLeft: 2}} weight={300}>{placeItem.location.address}</CustomText>
 				</Pressable>
 		</View>
-		<Modal animationType="fade" transparent={true} visible={modalVisible}
+		<View style={{flex: 1, paddingHorizontal: 20}}>
+			<View>
+				<View style={styles.titleArea}>
+					<CustomText style={{fontSize: 20}} weight={600}>{placeItem.title}</CustomText>
+				<View style={{flexDirection: 'row', alignItems:'flex-end', justifyContent: 'space-between', marginTop: 10}}>
+					<CustomText style={{fontSize: 14, color: "#777"}} weight={600}>{placeItem.writer}</CustomText>
+					<CustomText style={{fontSize: 12, color: "#777", marginLeft: 6}}>{placeItem.createdAt.slice(0, 10)}</CustomText>
+				</View>
+				</View>
+			</View>
+			<ScrollView style={{flex: 1, paddingVertical: 18}}>
+				<CustomText style={{fontSize: 18, lineHeight: 30}}>{placeItem.title}</CustomText>
+			</ScrollView>
+		</View>
+		
+		<Modal animationType="slide" transparent={true} visible={modalVisible}
 			onRequestClose={() => setModalVisible(!modalVisible)}>
 			<View style={styles.modalArea}>
 				<Pressable style={styles.touchArea} onPress={() => setModalVisible(!modalVisible)}></Pressable>
@@ -75,18 +90,6 @@ export default function PlaceViewScreen({navigation, route}) {
 				</View>
 			</View>
 		</Modal>
-		{/* <View style={{paddingHorizontal: 20}}>
-			<View style={styles.titleArea}>
-				<CustomText style={{fontSize: 16}} weight={600}>{data.title}</CustomText>
-				<View style={{flexDirection: 'row', alignItems:'flex-end', marginTop:6}}>
-					<CustomText style={{fontSize: 14, color: "#777"}}>{data.writer}</CustomText>
-					<CustomText style={{fontSize: 12, color: "#777", marginLeft: 6}}>{data.createdAt.slice(0, 10)}</CustomText>
-				</View>
-			</View>
-		</View>
-		<View style={{paddingHorizontal: 20, paddingVertical: 18}}>
-			<CustomText style={{fontSize: 18, lineHeight: 30}}>{data.content}</CustomText>
-		</View> */}
 	</View>)
 }
 const styles = StyleSheet.create({

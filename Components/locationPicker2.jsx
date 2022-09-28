@@ -10,9 +10,8 @@ import { createStaticMapUri, getAdresses } from "../util/maps";
 
 import CustomText from "./customText";
 import LoadingOverlay from "./loadingOverlay";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
-export default function LocationPicker2({onPicked, initCoords, plceImageLocation}) {
+export default function LocationPicker({onPicked, initCoords, plceImageLocation}) {
 	// console.log('plceImageLocation', plceImageLocation)
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mapUri, setMapUri] = useState(null);
@@ -20,9 +19,6 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 	const [lat, setLat] = useState();
 	const [lng, setLng] = useState();
 	const [coordinate, setCoordinate] = useState(null);
-	const [init, setInit] = useState(null)
-	
-	const [locationPermission, requsetLocationPermission] = useForegroundPermissions();
 	useEffect(() => {
 		if(initCoords) {
 			// console.log('init', initCoords)
@@ -61,6 +57,14 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 			}
 		}
 	}, [plceImageLocation]);
+	const init ={
+		latitude: lat,
+		longitude: lng,
+		latitudeDelta: 0.01922,
+		longitudeDelta: 0.01421,
+	}
+	
+	const [locationPermission, requsetLocationPermission] = useForegroundPermissions();
 	const verifyPermition = async() => {
 		if(locationPermission.status !== 'granted') {
 			const permission = await requsetLocationPermission();
@@ -88,8 +92,6 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 		// console.log(result)
 		setLat(result.coords.latitude);
 		setLng(result.coords.longitude);
-		setCoordinate({latitude: result.coords.latitude, longitude: result.coords.longitude});
-		setInit({latitude: result.coords.latitude, longitude: result.coords.longitude, latitudeDelta: 0.01922, longitudeDelta: 0.01421})
 	}
 	const confirm = (lattiude, longitude) => {
 		if(!coordinate) {
@@ -100,31 +102,13 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 	}
 	const mapPressHandle = async({nativeEvent}) => {
 		// console.log(nativeEvent)
-		const latitude = nativeEvent.coordinate.latitude;
-		const longitude = nativeEvent.coordinate.longitude;
-		setCoordinate(longitude);
-		setLat(latitude);
-		setLng(longitude.longitude);
-		const addr = await getAdresses(latitude, longitude.longitude);
+		setCoordinate(nativeEvent.coordinate);
+		setLat(nativeEvent.coordinate.latitude);
+		setLng(nativeEvent.coordinate.longitude);
+		const addr = await getAdresses(nativeEvent.coordinate.latitude, nativeEvent.coordinate.longitude);
 		setAddress(addr);
-		setInit({latitude: latitude, longitude: longitude, latitudeDelta: 0.01922, longitudeDelta: 0.01421});
-		onPicked({ coordination: {latitude: latitude, longitude:  longitude.longitude}, address: addr  });
+		onPicked({ coordination: {latitude: nativeEvent.coordinate.latitude, longitude:  nativeEvent.coordinate.longitude}, address: addr  });
 	}
-	
-	const searchHandle = (data, details = null) => {
-		const latitude = details.geometry.location.lat;
-		const longitude = details.geometry.location.lng;
-		const addr = data.description.substring(data.description.indexOf(' ')+1);
-		const coord = {latitude: latitude, longitude: longitude}
-		console.log('data : ', data, '\n details : ', details);
-		setCoordinate(coord);
-		setLat(latitude);
-		setLng(longitude);
-		setAddress(addr);
-		setInit({latitude: latitude, longitude: longitude, latitudeDelta: 0.01922, longitudeDelta: 0.01421});
-		onPicked({coordination: coord, address: addr});
-	}
-	console.log(init)
 	return(<View style={{marginTop: 20}}>
 		<View style={styles.contentArea}>
 			<Pressable style={{flex:1}} onPress={moveToChooseLocation}>
@@ -148,40 +132,15 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 				</View>
 			</Pressable>
 		</View>
-		<Modal animationType="fade" transparent={true} visible={modalVisible}
+		<Modal animationType="slide" transparent={true} visible={modalVisible}
 			onRequestClose={() => setModalVisible(!modalVisible)}>
 			<View style={styles.modalArea}>
 				<Pressable style={styles.touchArea} onPress={() => setModalVisible(!modalVisible)}></Pressable>
 				<View style={styles.modalContent}>
 					<View style={{flex: 1, alignItems: 'center', position: 'relative'}}>
 					{lng ? <>
-						<GooglePlacesAutocomplete
-							placeholder='Search'
-							fetchDetails= {true}
-							autoFocus={false}
-							minLength={2}
-							returnKeyType={"search"}				
-							GooglePlacesSearchQuery={{
-								rankby: 'distance'
-							}}
-							nearbyPlacesAPI='GooglePlacesSearch'
-							debounce={400}
-							onPress={searchHandle}
-							query={{
-								key: 'AIzaSyAwu3irzU1v9B4A-BFuXeuh6aZOzAaD3sY',
-								language: 'ko',
-							}}
-							styles={{
-								container: { width: '84%', flex: 0, position: 'absolute', top: 20, zIndex: 1000, backgroundColor: 'black'},
-								textInputContainer: { backgroundColor: '#fff', flex: 1 },
-								textInput: { flex: 1, color: '#5d5d5d', fontSize: 16},
-								predefinedPlacesDescription: {color: '#1faadb'},
-								listView: { backgroundColor: '#fff'}
-							}}
-							/>
-						<MapView style={{width: '100%', height:'100%'}} initialRegion={init} region={init} onPress={mapPressHandle } >
+						<MapView style={{width: '100%', height:'100%'}} initialRegion={init} onPress={mapPressHandle } >
 							{coordinate && <Marker coordinate={coordinate} />}
-							
 						</MapView>
 						<View style={{width: '84%', position: 'absolute', bottom: 40, }}>
 							<Button title="확인" color="#ffbf00" onPress={ () => confirm(lng, lat) }/>
