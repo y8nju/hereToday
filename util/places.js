@@ -1,0 +1,37 @@
+import axios from "axios";
+import { Buffer } from "buffer";
+
+export async function sendAddPlaceRequest(placeData, fileData, fileURI, idToken, writer) {
+	const fileName = fileURI.substring(fileURI.lastIndexOf('/') + 1);
+	console.log(fileName)
+	const endPoint = `https://firebasestorage.googleapis.com/v0/b/with-b2c7b.appspot.com/o/${fileName}`
+	// 1. 파일 업로드 (Storage)
+	console.log('[fileData]', fileData?.length, ' : ' , fileData?.substring(0, 100));
+	const uploadResult = await axios({
+		url: endPoint,
+		method: 'post',
+		headers: {
+			"Content-type": "image/jpeg"
+		},
+		// npm i buffer
+		data: Buffer.from(fileData, "base64")
+	})
+	// console.log(uploadResult)
+
+	// // 2. 데이터 저장(Realtime Database)
+	// console.log(placeData);
+	
+	const placeItem ={...placeData, 
+		imgURI: `${endPoint}?alt=media`, 
+		writer,
+		createdAt: new Date()}
+	await axios.post(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place.json?auth=${idToken}`, {
+		placeItem
+	})
+	console.log(placeItem);
+}
+
+export async function placeList() {
+	const response = await axios.get('https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place.json')
+	return response.data;
+}

@@ -12,6 +12,7 @@ import CustomText from "./customText";
 import LoadingOverlay from "./loadingOverlay";
 
 export default function LocationPicker({onPicked, initCoords, plceImageLocation}) {
+	// console.log('plceImageLocation', plceImageLocation)
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mapUri, setMapUri] = useState(null);
 	const [address, setAddress] = useState(null);
@@ -20,7 +21,7 @@ export default function LocationPicker({onPicked, initCoords, plceImageLocation}
 	const [coordinate, setCoordinate] = useState(null);
 	useEffect(() => {
 		if(initCoords) {
-			console.log('init', initCoords)
+			// console.log('init', initCoords)
 			!async function() {
 				const temp = createStaticMapUri(initCoords.latitude, initCoords.longitude);
 				const addr = await getAdresses(initCoords.latitude, initCoords.longitude);
@@ -32,26 +33,28 @@ export default function LocationPicker({onPicked, initCoords, plceImageLocation}
 	}, [initCoords?.latitude, initCoords?.longitude])
 	useEffect(()=> {
 		if(plceImageLocation) {
-			Alert.alert('오늘여기', '사진의 위치 정보를 이용하여, 지도를 추가할까요?', [
-				{ text: '취소' },
-				{ text: '확인', 
-					onPress: () => {
-						setModalVisible(true);
-						verifyPermition();
-						setLat(plceImageLocation.latitude);
-						setLng(plceImageLocation.longitude);
-						setCoordinate(plceImageLocation);
-						
-						!async function() {
-							const temp = createStaticMapUri(plceImageLocation.latitude, plceImageLocation.longitude);
-							const addr = await getAdresses(plceImageLocation.latitude, plceImageLocation.longitude);
-							setAddress(addr);
-							setMapUri(temp);
-							onPicked({ coordination: {latitude: plceImageLocation.latitude, longitude:  plceImageLocation.longitude}, address: addr  });
-						}();
+			if(plceImageLocation.latitude !== undefined && plceImageLocation.latitude !== null) {
+				Alert.alert('오늘여기', '사진의 위치 정보를 이용하여, 지도를 추가할까요?', [
+					{ text: '취소' },
+					{ text: '확인', 
+						onPress: () => {
+							setModalVisible(true);
+							verifyPermition();
+							setLat(plceImageLocation.latitude);
+							setLng(plceImageLocation.longitude);
+							setCoordinate(plceImageLocation);
+							
+							!async function() {
+								const temp = createStaticMapUri(plceImageLocation.latitude, plceImageLocation.longitude);
+								const addr = await getAdresses(plceImageLocation.latitude, plceImageLocation.longitude);
+								setAddress(addr);
+								setMapUri(temp);
+								onPicked({ coordination: {latitude: plceImageLocation.latitude, longitude:  plceImageLocation.longitude}, address: addr  });
+							}();
+						}
 					}
-				}
-			])
+				])
+			}
 		}
 	}, [plceImageLocation]);
 	const init ={
@@ -75,7 +78,7 @@ export default function LocationPicker({onPicked, initCoords, plceImageLocation}
 		verifyPermition();
 		console.log(locationPermission);
 		const result = await getCurrentPositionAsync();
-		console.log(result);
+		// console.log(result);
 		const temp = createStaticMapUri(result.coords.latitude, result.coords.longitude);
 		const addr = await getAdresses(result.coords.latitude, result.coords.longitude);
 		setAddress(addr);
@@ -86,7 +89,7 @@ export default function LocationPicker({onPicked, initCoords, plceImageLocation}
 		setModalVisible(true);
 		verifyPermition();
 		const result = await getCurrentPositionAsync();
-		console.log(result)
+		// console.log(result)
 		setLat(result.coords.latitude);
 		setLng(result.coords.longitude);
 	}
@@ -98,7 +101,7 @@ export default function LocationPicker({onPicked, initCoords, plceImageLocation}
 		}
 	}
 	const mapPressHandle = async({nativeEvent}) => {
-		console.log(nativeEvent)
+		// console.log(nativeEvent)
 		setCoordinate(nativeEvent.coordinate);
 		setLat(nativeEvent.coordinate.latitude);
 		setLng(nativeEvent.coordinate.longitude);

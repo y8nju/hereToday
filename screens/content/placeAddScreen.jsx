@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, Keyboard,StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
+
+import { sendAddPlaceRequest } from "../../util/places";
 
 import defaultStyle from "../styleSheet";
 
+import { AppContext } from "../../context/appContext";
 import ImagePicker from "../../Components/imagePicker";
 import LocationPicker from "../../Components/locationPicker";
 import HeaderRightButton from "../../Components/headerRightButton";
@@ -15,19 +18,23 @@ export default function PlaceAddScreen({navigation}) {
 	const [placeImage, setPlaceImage] = useState(null);	// 장소 이미지
 	const [placeLocation, setPlaceLocation] = useState();	// 장소 위치
 	const [plceImageLocation, setPlaceImageLocation] = useState(null);
+	const [placeImageBase64, setPlaceImageBase64] = useState();
+	
+	const ctx = useContext(AppContext);
 	useEffect(()=> {
 		navigation.setOptions({
 			headerRight: ()=> <HeaderRightButton onPress={writeHandle}>공유</HeaderRightButton>
 		});
 		console.log('placeName: ', placeName, '\n placeInfo :', placeInfo, '\n placeImage: ', placeImage, '\n placeLocation: ', placeLocation)
-	},[placeName, placeInfo, placeImage, placeLocation, plceImageLocation ])
+	},[placeName, placeInfo, placeImage, placeLocation, plceImageLocation, placeImageBase64 ])
 	
 	const modalCloseHandle = () => {
 		setModal(false);
 	}
-	const imagePickeredHandle = (uri) => {
+	const imagePickeredHandle = (uri, base64) => {
+		setPlaceImageBase64(base64);
 		if(uri !== undefined) {
-			console.log(uri)
+			// console.log(uri)
 			setPlaceImage(uri.uri)
 			if(uri.coordination) {
 				setPlaceImageLocation(uri.coordination);
@@ -44,17 +51,28 @@ export default function PlaceAddScreen({navigation}) {
 			}, {
 				text: '공유',
 				onPress: () =>{ 
-					setLoading(true);
-					!async function () {
-						
-						try {
-							
-						} catch (e) {
-							console.log(e);
-						}
-						setLoading(false);
-					}();
-					navigation.navigate("Home", {status: 'create'});
+					if(!placeImageBase64 || !placeName || !placeLocation || !placeImage || !placeInfo) {
+						Alert.alert('오늘여기', '모든 필드는 필수입니다')
+					}else {
+						setLoading(true);
+						!async function () {
+							try {
+								const data = {
+									title: placeName,
+									info: placeInfo,
+									fileUri: placeImage,
+									location: placeLocation
+								}
+								const idToken = ctx.auth.idToken;
+								const writer = ctx.auth.email;
+								sendAddPlaceRequest( data, placeImageBase64, placeImage, idToken, writer)
+							} catch (e) {
+								console.log(e);
+							}
+							setLoading(false);
+						}();
+						navigation.navigate("Home", {status: 'create'});
+					}
 				}
 			}
 		])

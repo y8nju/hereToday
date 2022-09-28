@@ -1,5 +1,5 @@
-import { useContext, useEffect } from "react";
-import { Button, Image, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { Button, FlatList, Image, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
 import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -7,8 +7,11 @@ import defaultStyle from "./styleSheet";
 
 import { AppContext } from "../context/appContext";
 import CustomText from "../Components/customText";
+import { placeList } from "../util/places";
+import PlaceItem from "../Components/placeItem";
 
 export default function HomeScreen({route}) {
+	const [places, setPlaces] = useState([]);
 	const navigation = useNavigation(AppContext);
 	const ctx = useContext(AppContext);
 	// console.log(route.params)
@@ -17,6 +20,7 @@ export default function HomeScreen({route}) {
 	const focused = useIsFocused();
 
 	useEffect(()=> {
+		onRead();
 		if(route.params !== undefined) {
 			switch(route.params.status) {
 				case 'login':
@@ -33,12 +37,20 @@ export default function HomeScreen({route}) {
 					return ToastAndroid.show("여기를 공유했어요", ToastAndroid.SHORT);
 			}
 		}
-	}, [route])
+	}, [route, places])
 	const loginHandle = () => {
 		navigation.navigate("Account");
 	}
 	const onAddItemHandle = ()=> {
 		navigation.navigate('PlaceAdd');
+	}
+	function onRead() {
+		placeList()
+			.then((recv) => {
+				const placeArr = Object.keys(recv).map((name) => { return {name, ...recv[name]}});
+				placeArr.sort((a, b) => a.createdAt - b.createdAt).reverse();
+				setPlaces(placeArr);
+			})
 	}
 	if(!ctx.auth) {
 		return (<View style={[defaultStyle.wrap, {justifyContent: 'center'}]}>
@@ -52,8 +64,11 @@ export default function HomeScreen({route}) {
 	}
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
-			<View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>	
-			<CustomText type="hand" style={{fontSize: 32}}> 준비중 </CustomText>
+			<View style={{flex:1}}>	
+				{places && <FlatList style={{flex: 1}} data={places}  
+					keyExtractor={({name})=> name}
+					renderItem={(one)=> <PlaceItem data={one} />}
+					/>}
 			</View>
 			{ctx.auth && <View style={styles.addBtn}>
 				<Pressable android_ripple={{color: '#fff'}} onPress={onAddItemHandle}

@@ -3,7 +3,7 @@ import {Text} from "react-native";
 export default function CustomText({children, style, weight, type}) {
 	if(!type) {
 		if(weight === 300) {
-			return (<Text style={[{fontFamily: 'SUIT-Ligh'}, style]}>{children}</Text>)
+			return (<Text style={[{fontFamily: 'SUIT-Light'}, style]}>{children}</Text>)
 		}else if(weight === 600) {
 			return (<Text style={[{fontFamily: 'SUIT-SemiBold'}, style]}>{children}</Text>)
 		}else if(weight === 800) {

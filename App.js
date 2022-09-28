@@ -23,6 +23,7 @@ import WithdrawScreen from './screens/account/withdrawScreen';
 import WithdrawSuccessScreen from './screens/account/withdrawSuccessScreen';
 import PlaceAddScreen from './screens/content/placeAddScreen';
 import Splash from './Components/splash';
+import PlaceViewScreen from './screens/content/placeViewScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -56,6 +57,7 @@ function HomeStackNavigator() {
 	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
 		<Stack.Screen name="Home" component={HomeScreen} options={{title: '오늘여기'}}/>
 		<Stack.Screen name="PlaceAdd" component={PlaceAddScreen} options={{title: '여기 공유하기', presentation: 'modal', animation: 'fade_from_bottom'}}/>
+		<Stack.Screen name="PlaceView" component={PlaceViewScreen} options={{title: '여기', presentation: 'modal', animation: 'fade_from_bottom', headerTransparent: true	}}/>
 		<Stack.Screen name="WithdrawSuccess" component={WithdrawSuccessScreen} options={{title: '탈퇴 완료'}}/>
 		{/* <Stack.Screen name="TalkView" component={TalkViewScreen} options={{title: '이야기'}}/> */}
 	</Stack.Navigator>)

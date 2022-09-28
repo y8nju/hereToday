@@ -18,7 +18,7 @@ export default function ImagePicker({onPicked}) {
 			imagePermission.status == PermissionStatus.UNDETERMINED) {
 				try{
 					const resp = await requestImagePermission();
-					console.log(resp);
+					// console.log(resp);
 					if (!resp.granted) {
 						Alert.alert('오늘여기', '이 기능은 갤러리 접근 권한이 필요해요');
 						return;
@@ -31,22 +31,23 @@ export default function ImagePicker({onPicked}) {
 			const result = await launchImageLibraryAsync({
 				quality: 0.5,
 				allowsEditing: true,
-				aspect: [16, 9],	// 비율
+				aspect: [1, 1],	// 비율
 				exif: true,	// 사진에 저장된 정보를 가져옴
+				base64: true,	// 인코딩방식
 			});
 			if(!result.cancelled) {
 				// 사진에 GPS 정보가 저장되어 있으면, 위치를 얻어낼 수 있다
 				const lat = result.exif.GPSLatitude;
 				const lng = result.exif.GPSLongitude;
 				if(lat !== 0 && lng !==0 || lat !== undefined && lng !== undefined) {
-					onPicked({uri: result.uri, coordination: {latitude: result.exif.GPSLatitude, longitude:  result.exif.GPSLongitude}})
+					onPicked({uri: result.uri, coordination: {latitude: result.exif.GPSLatitude, longitude:  result.exif.GPSLongitude}}, result.base64)
 				}else {
-					onPicked({uri: result.uri});	// 부모한테 이미지 넘기기
+					onPicked({uri: result.uri}, result.base64);	// 부모한테 이미지 넘기기
 				}
 				setImageUri(result.uri);
-				console.log(result.exif);
+				// console.log(result.exif);
 			}
-			console.log(result);
+			// console.log(result);
 			setImageUri(result.uri);
 			setModalVisible(false);
 	}
@@ -56,7 +57,7 @@ export default function ImagePicker({onPicked}) {
 		console.log(status)
 		if(status !== 'granted') {
 			const resp = await requestCameraPermission();
-			console.log(resp);
+			// console.log(resp);
 			if (!resp.granted) {
 				Alert.alert('오늘여기', '이 기능은 카메라 접근 권한이 필요해요');
 				return;
@@ -65,22 +66,24 @@ export default function ImagePicker({onPicked}) {
 		const result = await launchCameraAsync({
 			quality: 0.5,
 			allowsEditing: true,
-			aspect: [16, 9],	// 비율
+			aspect: [1, 1],	// 비율
+			exif: true,	// 사진에 저장된 정보를 가져옴
+			base64: true,	// 인코딩방식
 		});
 		if(!result.cancelled) {
+			// console.log(result.base64)
 			// 사진에 GPS 정보가 저장되어 있으면, 위치를 얻어낼 수 있다
 			const lat = result.exif.GPSLatitude;
 			const lng = result.exif.GPSLongitude;
-			if(lat !== 0 && lng !==0 || lat !== undefined && lng !== undefined) {
-				onPicked({uri: result.uri, coordination: {latitude: result.exif.GPSLatitude, longitude:  result.exif.GPSLongitude}})
-			}else {
-				onPicked({uri: result.uri});	// 부모한테 이미지 넘기기
+			if(lat !== 0 && lng !==0 || lat !== undefined && lng !== undefined && !lat && ! lng) {
+				onPicked({uri: result.uri, coordination: {latitude: result.exif.GPSLatitude, longitude:  result.exif.GPSLongitude}}, result.base64)
+			}else{
+				onPicked({uri: result.uri}, result.base64);	// 부모한테 이미지 넘기기
 			}
 			setImageUri(result.uri);
 		}
-		console.log(result);
+		// console.log(result);
 		setImageUri(result.uri);
-		onPicked(result.uri);
 		setModalVisible(false);
 	}
 	return(<View style={{marginTop: 10}}>
