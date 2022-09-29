@@ -50,7 +50,7 @@ export default function LoginScreen({navigation, route}) {
 				console.log(userData);
 				ctx.dispatch({type: 'login', payload: userData});
 				AsyncStorage.setItem('authentication', JSON.stringify(userData));
-				navigation.navigate("Home", {status: 'login'});
+				navigation.navigate("HomeStack", {screen: 'Home', params: {status: 'login'}});
 			} catch (e) {
 				Alert.alert("오늘여기", "아이디 혹은 비밀번호를 확인하세요")
 				console.log(e);

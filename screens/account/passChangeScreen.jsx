@@ -40,7 +40,7 @@ export default function PassChangeScreen({navigation}) {
 								const recv = await sendpassChangeRequest(idToken, password);
 								console.log(recv); 
 								ctx.dispatch({type: 'logout'});
-								navigation.navigate('Login', {status: 'passChange'})
+								navigation.navigate("Account", {screen: 'Login', params: {status: 'passChange'}});
 							} catch(e) {
 								Alert.alert('오늘여기', '비밀번호가 정상적으로 변경되지 않았습니다')
 								console.log(e.message);

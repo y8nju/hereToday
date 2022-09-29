@@ -100,7 +100,7 @@ export default function App() {
 						tabBarLabelStyle: { fontFamily: 'SUIT-SemiBold', display: 'none'},
 						tabBarActiveTintColor: "#ffbf00"
 					}}>
-						<Tab.Screen name="Home" component={HomeStackNavigator} 
+						<Tab.Screen name="HomeStack" component={HomeStackNavigator} 
 							options={{headerShown: false,
 							tabBarIcon:({ focused, color,  }) => (
 							<Ionicons name={focused ? 'md-home-sharp' : 'md-home-outline' } color={color} size={24} />

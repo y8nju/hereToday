@@ -18,7 +18,7 @@ export default function UserSettingScreen({navigation, route}) {
 				text: '로그아웃',
 				onPress: () =>{
 					ctx.dispatch({type: 'logout'});
-					navigation.navigate("Home", {status: 'logout'});
+					navigation.navigate("HomeStack", {screen: 'Home', params: {status: 'logout'}});
 				}
 			}
 		])
