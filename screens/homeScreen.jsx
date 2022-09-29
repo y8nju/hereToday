@@ -81,24 +81,25 @@ export default function HomeScreen({route}) {
 		setLoaded(false);
 	},[allPlace])
 	useEffect(()=> {
-		setRefresh(true);
+		// setRefresh(true);
+		console.log('route.params :', route.params)
 		if(route.params !== undefined) {
 			switch(route.params.status) {
 				case 'login':
-					navigation.dispatch(CommonActions.setParams({ status: '' }));
-					return ToastAndroid.show("어서오세요", ToastAndroid.SHORT);
+					ToastAndroid.show("어서오세요", ToastAndroid.LONG);
+					return navigation.dispatch(CommonActions.setParams({ status: '' }));
 				case 'logout':
-					navigation.dispatch(CommonActions.setParams({ status: '' }));
-					return ToastAndroid.show("다음에 또 만나요", ToastAndroid.SHORT);
+					ToastAndroid.show("다음에 또 만나요", ToastAndroid.LONG);
+					return navigation.dispatch(CommonActions.setParams({ status: '' }));
 				case 'signup':
-					navigation.dispatch(CommonActions.setParams({ status: '' }));
-					return ToastAndroid.show("만나서 반가워요", ToastAndroid.SHORT);
+					ToastAndroid.show("만나서 반가워요", ToastAndroid.LONG);
+					return navigation.dispatch(CommonActions.setParams({ status: '' }));
 				case 'create':
-					navigation.dispatch(CommonActions.setParams({ status: '' }));
-					return ToastAndroid.show("여기를 공유했어요", ToastAndroid.SHORT);
+					ToastAndroid.show("여기를 공유했어요", ToastAndroid.SHORT);
+					return navigation.dispatch(CommonActions.setParams({ status: '' }));
 			}
 		}
-		setRefresh(false);
+		// setRefresh(false);
 	}, [route, focused]);
 
 	const verifyPermition = async() => {
@@ -120,11 +121,14 @@ export default function HomeScreen({route}) {
 		navigation.navigate('PlaceAdd');
 	}
 	const getPlaceArr = async() => {
-		const result = await placeList();
-		console.log(result);
-		const placeArr = Object.keys(result).map((name) => { return {name, ...result[name]}});
-		placeArr.sort((a, b) => a.createdAt - b.createdAt).reverse();
-		setAllPlace(addRangeFieldAndSort(placeArr, location?.lat, location?.lng));
+		let idToken = ctx.auth?.idToken;
+		if(idToken) {
+			const result = await placeList(idToken);
+			console.log(result);
+			const placeArr = Object.keys(result).map((name) => { return {name, ...result[name]}});
+			placeArr.sort((a, b) => a.createdAt - b.createdAt).reverse();
+			setAllPlace(addRangeFieldAndSort(placeArr, location?.lat, location?.lng));
+		}
 	}
 	function onRead() {
 		const arr = allPlace.filter(one => {

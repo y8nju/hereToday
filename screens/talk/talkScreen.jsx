@@ -34,7 +34,8 @@ export default function TalkScreen({navigation, route}) {
 	}
 	
 	function onRead() {
-		messageList()
+		const idToken = ctx.auth.idToken;
+		messageList(idToken)
 		.then( (recv) => {
 			const messageArr = Object.keys(recv).map((name) => { return {name, ...recv[name]}});
 			messageArr.sort((a, b)=>a.createdAt - b.createdAt).reverse();

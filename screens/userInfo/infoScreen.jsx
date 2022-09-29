@@ -8,9 +8,8 @@ import { AppContext } from "../../context/appContext";
 import InfoNavScreen from "./infoNavScreen";
 import HeaderRightButton from "../../Components/headerRightButton";
 
-export default function InfoScreen({navigation}) {
+export default function InfoScreen({navigation, route}) {
 	const ctx = useContext(AppContext);
-
 	useEffect(() => {
 		navigation.setOptions({
 			title: ctx.auth.email,

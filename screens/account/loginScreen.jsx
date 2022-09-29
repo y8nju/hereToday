@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { Alert, Button, ImageBackground, Keyboard, Pressable, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { Alert, Button, ImageBackground, Keyboard, Pressable, StyleSheet, TextInput, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
+import { CommonActions, useIsFocused } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { sendLoginRequest } from "../../util/account";
@@ -11,18 +11,32 @@ import { AppContext } from "../../context/appContext";
 import CustomText from "../../Components/customText";
 import LoadingOverlay from "../../Components/loadingOverlay";
 
-export default function LoginScreen() {
-	const navigation = useNavigation();
+export default function LoginScreen({navigation, route}) {
 	const [loading, setLoading] = useState(false);
 	const [inputValues, setInputValues] = useState({ email: "", password: "" });
 	const {email, password} = inputValues;
 	const ctx = useContext(AppContext);
+	const focused = useIsFocused();
 
 	useEffect(() => {
 		navigation.setOptions({
 			title: "로그인"
 		});
 	}, []);
+	useEffect(()=> {
+		console.log(route, route.params)
+		if(route.params) {
+			switch(route.params.status) {
+				case 'logout':
+					Alert.alert('aa', 'aaaa')
+					ToastAndroid.show("다음에 또 만나요", ToastAndroid.LONG);
+					return navigation.dispatch(CommonActions.setParams({ status: '' }));
+				case 'passChange':
+					ToastAndroid.show("비밀번호가 변경되어 로그아웃 되었습니다", ToastAndroid.LONG);
+					return navigation.dispatch(CommonActions.setParams({ status: '' }));
+			}
+		}
+	}, [route, focused]);
 
 	const moveRegisterHandle = () => {
 		navigation.navigate("Register");

@@ -1,6 +1,5 @@
-import { useContext, useEffect } from "react";
-import { Alert, Image, Pressable, StyleSheet, ToastAndroid, View } from "react-native";
-import { CommonActions } from "@react-navigation/native";
+import { useContext } from "react";
+import { Alert, Image, Pressable, StyleSheet, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
 import defaultStyle from "../styleSheet";
@@ -10,16 +9,6 @@ import CustomText from "../../Components/customText";
 
 export default function UserSettingScreen({navigation, route}) {
 	const ctx = useContext(AppContext);
-
-	useEffect(() => {
-		if(route.params !== undefined) {
-			switch(route.params.status) {
-				case 'passChange':
-					navigation.dispatch(CommonActions.setParams({ status: '' }));
-					return ToastAndroid.show("비밀번호가 변경되었습니다", ToastAndroid.SHORT);
-			}
-		}
-	}, [route])
 	
 	const logoutHandle = () => {
 		Alert.alert("오늘여기", "로그아웃 하시겠습니까?", [
@@ -29,7 +18,7 @@ export default function UserSettingScreen({navigation, route}) {
 				text: '로그아웃',
 				onPress: () =>{
 					ctx.dispatch({type: 'logout'});
-					navigation.navigate("NotLogin", {status: 'logout'});
+					navigation.navigate("Home", {status: 'logout'});
 				}
 			}
 		])

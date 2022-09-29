@@ -31,8 +31,8 @@ export async function sendAddPlaceRequest(placeData, fileData, fileURI, idToken,
 	console.log(placeItem);
 }
 
-export async function placeList() {
-	const response = await axios.get('https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place.json')
+export async function placeList(idToken) {
+	const response = await axios.get(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place.json?auth=${idToken}`)
 	return response.data;
 }
 export async function placeFavorite(favoriteArr, name, idToken) {

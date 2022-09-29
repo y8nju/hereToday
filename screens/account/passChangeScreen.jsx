@@ -23,7 +23,7 @@ export default function PassChangeScreen({navigation}) {
 	}, [pass]);
 
 	const passChangeHandele = () => {
-		Alert.alert("오늘여기", "입력하신 비밀번호로 저장할까요?", [
+		Alert.alert("오늘여기", `입력하신 비밀번호로 저장할까요? \n비밀번호 변경 시 로그아웃됩니다`, [
 			{
 				text: '취소'
 			}, {
@@ -39,7 +39,8 @@ export default function PassChangeScreen({navigation}) {
 							try{
 								const recv = await sendpassChangeRequest(idToken, password);
 								console.log(recv); 
-								navigation.navigate('UserSetting', {status: 'passChange'})
+								ctx.dispatch({type: 'logout'});
+								navigation.navigate('Login', {status: 'passChange'})
 							} catch(e) {
 								Alert.alert('오늘여기', '비밀번호가 정상적으로 변경되지 않았습니다')
 								console.log(e.message);

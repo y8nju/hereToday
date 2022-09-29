@@ -29,7 +29,8 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function GuestStackNavigator() {
-	return (<Stack.Navigator screenOptions={{
+	return (<Stack.Navigator
+			initialRouteName="Login" screenOptions={{
 			headerTitleStyle: {fontFamily: "SUIT-Regular"}, 
 			animation: 'slide_from_right'
 		}}>
@@ -53,17 +54,12 @@ function TalkStackNavigator() {
 		<Stack.Screen name="TalkUpdate" component={TalkUpdateScreen} options={{title: '이야기 수정하기'}}/>
 	</Stack.Navigator>)
 }
-function HomeStackMemberNavigator() {
-	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
+function HomeStackNavigator() {
+	return (<Stack.Navigator
+			initialRouteName="Home" screenOptions={{animation: 'slide_from_right'}}>
 		<Stack.Screen name="Home" component={HomeScreen} options={{title: '오늘여기'}}/>
 		<Stack.Screen name="PlaceAdd" component={PlaceAddScreen} options={{title: '여기 공유하기', presentation: 'modal', animation: 'fade_from_bottom'}}/>
 		<Stack.Screen name="PlaceView" component={PlaceViewScreen} options={{title: '여기', presentation: 'modal', animation: 'fade_from_bottom', headerTransparent: true	}}/>
-		{/* <Stack.Screen name="TalkView" component={TalkViewScreen} options={{title: '이야기'}}/> */}
-	</Stack.Navigator>)
-}
-function HomeStackGusetNavigator() {
-	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
-		<Stack.Screen name="NotLogin" component={HomeScreen} options={{title: '로그인'}}/>
 		<Stack.Screen name="WithdrawSuccess" component={WithdrawSuccessScreen} options={{title: '탈퇴 완료'}}/>
 	</Stack.Navigator>)
 }
@@ -72,12 +68,6 @@ function AccountStackNavigator() {
 	const ctx = useContext(AppContext);
 	return (<>
 		{ctx.auth ? <MemberStackNavigator /> : <GuestStackNavigator />}
-	</>)
-}
-function HomeStackNavigator() {
-	const ctx = useContext(AppContext);
-	return (<>
-		{ctx.auth ? <HomeStackMemberNavigator /> : <HomeStackGusetNavigator />}
 	</>)
 }
 export default function App() {
@@ -110,7 +100,7 @@ export default function App() {
 						tabBarLabelStyle: { fontFamily: 'SUIT-SemiBold', display: 'none'},
 						tabBarActiveTintColor: "#ffbf00"
 					}}>
-						<Tab.Screen name="HomeStack" component={HomeStackNavigator} 
+						<Tab.Screen name="Home" component={HomeStackNavigator} 
 							options={{headerShown: false,
 							tabBarIcon:({ focused, color,  }) => (
 							<Ionicons name={focused ? 'md-home-sharp' : 'md-home-outline' } color={color} size={24} />

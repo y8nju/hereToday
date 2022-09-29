@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export async function messageList() {
-		const response = await axios.get('https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/messages.json')
+export async function messageList(idToken) {
+		const response = await axios.get(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/messages.json?auth=${idToken}`)
 		return response.data;
 }
 
@@ -12,8 +12,8 @@ export async function messageWrite(title, writer, content, idToken) {
 	return response.data
 }
 
-export async function messageDetail(name) {
-	const response = await axios.get(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/messages/${name}.json`)
+export async function messageDetail(name, idToken) {
+	const response = await axios.get(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/messages/${name}.json?auth=${idToken}`)
 	return response.data
 }
 
