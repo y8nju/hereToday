@@ -38,10 +38,14 @@ export default function HomeScreen({route}) {
 	const [places, setPlaces] = useState([]);
 	const [allPlace, setAllPlace] = useState([]);
 	const [refresh, setRefresh] = useState(false);
-	const [location, setLocation] =useState( null)
+	const [location, setLocation] =useState( null);
+	const [isPermission, setIsPermission] = useState(false);
 	const navigation = useNavigation(AppContext);
 	const ctx = useContext(AppContext);
 	const [locationPermission, requsetLocationPermission] = useForegroundPermissions();
+
+	/* navigation 이 가지고 있는 hook으로, 해당 화면에 focus된 상태인지 아닌지 확인해 볼 수 있다 */
+	const focused = useIsFocused();
 
 	/* 추가할 것
 		headerRight에 거리순, 전체 리스트 모달 넣기
@@ -56,11 +60,17 @@ export default function HomeScreen({route}) {
 		if(locationPermission) {
 			verifyPermition();
 			console.log('locationPermission : ', locationPermission);
+			setIsPermission(true);
 		}
-		myLocation();	// 내 위치 받기
+		// 내 위치 받기
 		console.log('location', location)
 
 	},[locationPermission]);
+	useEffect(()=> {
+		if(isPermission) {
+			myLocation();
+		}
+	}, [focused])
 
 	const verifyPermition = async() => {
 		// 위치 정보 권한 얻기
@@ -77,9 +87,6 @@ export default function HomeScreen({route}) {
 		const result = await getCurrentPositionAsync();
 		setLocation({lat: result.coords.latitude, lng: result.coords.longitude})
 	}
-
-	/* navigation 이 가지고 있는 hook으로, 해당 화면에 focus된 상태인지 아닌지 확인해 볼 수 있다 */
-	const focused = useIsFocused();
 
 	useEffect(()=> {
 		console.log('effect1');
@@ -104,9 +111,11 @@ export default function HomeScreen({route}) {
 		setLoaded(true);
 		console.log('effect2');
 		// 위치 받아서 location이 등록 됐으면 게시물 가져오기
-		getPlaceArr();
-		if(allPlace) {
-			onRead();
+		if(location !== null) {
+			getPlaceArr();
+			if(allPlace) {
+				onRead();
+			}
 		}
 		setLoaded(false);
 	}, [location, focused])

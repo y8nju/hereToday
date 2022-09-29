@@ -31,12 +31,8 @@ export default function PlaceViewScreen({navigation, route}) {
 			})
 		}
 		console.log('favoriteArr', favoriteArr, typeof favoriteArr);
-		if(favoriteArr) {
-			
-			const favFound = favoriteArr.filter(one => {
-				return one == ctx.auth.email
-			});
-			if(favFound != undefined) {
+		if(typeof favoriteArr == 'object') {
+			if(favoriteArr.includes(ctx.auth.email)) {
 				setFavChk(true)
 			}else {
 				setFavChk(false)
