@@ -10,6 +10,7 @@ import { CommonActions } from '@react-navigation/native';
 
 export default function TalkScreen({navigation, route}) {
 	const [messages, setMessages] = useState([]);
+	const [refresh, setRefresh] = useState(false);
 	const ctx = useContext(AppContext);
 	useEffect(() => {
 		onRead();
@@ -45,6 +46,14 @@ export default function TalkScreen({navigation, route}) {
 			<View style={{flex:1}}>	
 			{messages && <FlatList style={{flex: 1}} data={messages}  
 				keyExtractor={({name})=> name}
+				refreshing={ refresh }
+				onRefresh={()=> {
+					setRefresh(true)
+					setTimeout(()=> {
+						onRead();
+						setRefresh(false);
+					}, 2000);
+				}}
 				renderItem={(one)=> <TalkItem data={one} />}
 				/>}
 				

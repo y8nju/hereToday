@@ -23,6 +23,14 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 	const [init, setInit] = useState(null)
 	
 	const [locationPermission, requsetLocationPermission] = useForegroundPermissions();
+
+	useEffect(()=>{
+		if(locationPermission) {
+			verifyPermition();
+			console.log('locationPermission : ', locationPermission);
+		}
+	},[locationPermission]);
+
 	useEffect(() => {
 		if(initCoords) {
 			// console.log('init', initCoords)
@@ -62,7 +70,7 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 		}
 	}, [plceImageLocation]);
 	const verifyPermition = async() => {
-		if(locationPermission.status !== 'granted') {
+		if(locationPermission.status !== 'granted' || locationPermission.status == null) {
 			const permission = await requsetLocationPermission();
 			if(!permission.granted) {
 				return flase;
@@ -72,7 +80,6 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 	}
 	const takeFromLocation = async () => {
 		verifyPermition();
-		console.log(locationPermission);
 		const result = await getCurrentPositionAsync();
 		// console.log(result);
 		const temp = createStaticMapUri(result.coords.latitude, result.coords.longitude);
@@ -99,16 +106,16 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 		}
 	}
 	const mapPressHandle = async({nativeEvent}) => {
-		// console.log(nativeEvent)
+		console.log(nativeEvent)
 		const latitude = nativeEvent.coordinate.latitude;
 		const longitude = nativeEvent.coordinate.longitude;
-		setCoordinate(longitude);
+		setCoordinate({latitude: latitude, longitude: longitude});
 		setLat(latitude);
-		setLng(longitude.longitude);
-		const addr = await getAdresses(latitude, longitude.longitude);
+		setLng(longitude);
+		const addr = await getAdresses(latitude, longitude);
 		setAddress(addr);
 		setInit({latitude: latitude, longitude: longitude, latitudeDelta: 0.01922, longitudeDelta: 0.01421});
-		onPicked({ coordination: {latitude: latitude, longitude:  longitude.longitude}, address: addr  });
+		onPicked({ coordination: {latitude: latitude, longitude:  longitude}, address: addr  });
 	}
 	
 	const searchHandle = (data, details = null) => {
@@ -154,7 +161,7 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 				<View style={styles.modalContent}>
 					<View style={{flex: 1, alignItems: 'center', position: 'relative'}}>
 					{lng ? <>
-						<GooglePlacesAutocomplete
+						{coordinate &&<GooglePlacesAutocomplete
 							placeholder='Search'
 							fetchDetails= {true}
 							autoFocus={false}
@@ -177,7 +184,7 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 								predefinedPlacesDescription: {color: '#1faadb', textAlignVertical:'center'},
 								listView: { backgroundColor: '#fff'}
 							}}
-							/>
+							/>}
 						<MapView style={{width: '100%', height:'100%'}} initialRegion={init} region={init} onPress={mapPressHandle } >
 							{coordinate && <Marker coordinate={coordinate} />}
 							

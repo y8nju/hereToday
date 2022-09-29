@@ -26,7 +26,7 @@ export async function sendAddPlaceRequest(placeData, fileData, fileURI, idToken,
 		writer,
 		createdAt: new Date()}
 	await axios.post(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place.json?auth=${idToken}`, {
-		placeItem
+		placeItem, favorite: null
 	})
 	console.log(placeItem);
 }
@@ -34,4 +34,12 @@ export async function sendAddPlaceRequest(placeData, fileData, fileURI, idToken,
 export async function placeList() {
 	const response = await axios.get('https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place.json')
 	return response.data;
+}
+export async function placeFavorite(favoriteArr, name, idToken) {
+	const response = await axios.patch(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place/${name}.json?auth=${idToken}`, {
+		favorite: favoriteArr
+	})
+	console.log('????????', response.data)
+	return response.data
+
 }

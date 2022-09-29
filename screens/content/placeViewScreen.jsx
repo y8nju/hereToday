@@ -9,17 +9,20 @@ import CustomText from "../../Components/customText";
 import HeaderRightButton from "../../Components/headerRightButton";
 import { getCurrentPositionAsync, useForegroundPermissions } from "expo-location";
 import MapView, { Marker } from "react-native-maps";
+import { placeFavorite } from "../../util/places";
 
 const windowWidth = Dimensions.get('window').width;
 
 export default function PlaceViewScreen({navigation, route}) {
 	
-	const {name, placeItem} = route.params.data;
+	const {name, placeItem, range, favorite} = route.params.data;
 	const [modalVisible, setModalVisible] = useState(false);
+	const [favChk, setFavChk] = useState(false)
+	const [favoriteArr, setFavoriteArr] = useState(favorite);
 	
 	const ctx = useContext(AppContext);
-	console.log(route.params.data)
-	console.log(placeItem.location.coordination)
+	const {idToken} = ctx.auth;
+	console.log(route.params.data);
 
 	useEffect(() => {
 		if(placeItem.writer === ctx.auth.email){
@@ -27,7 +30,19 @@ export default function PlaceViewScreen({navigation, route}) {
 				headerRight: () => <HeaderRightButton onPress={updateHandle}>수정</HeaderRightButton>
 			})
 		}
-	})
+		console.log('favoriteArr', favoriteArr, typeof favoriteArr);
+		if(favoriteArr) {
+			
+			const favFound = favoriteArr.filter(one => {
+				return one == ctx.auth.email
+			});
+			if(favFound != undefined) {
+				setFavChk(true)
+			}else {
+				setFavChk(false)
+			}
+		}
+	}, [])
 	const init ={
 		latitude: placeItem.location.coordination.latitude,
 		longitude: placeItem.location.coordination.longitude,
@@ -51,6 +66,28 @@ export default function PlaceViewScreen({navigation, route}) {
 	const updateHandle = () => {
 		// navigation.navigate('TalkUpdate', {data: data});
 	}
+	const favoriteHandle =async () => {
+		if(favChk) {
+			setFavChk(false);
+			if(typeof favoriteArr == 'object') {
+
+			}
+		}else {
+			setFavChk(true);
+			if(typeof favoriteArr == 'string') {
+				try {
+					const email = ctx.auth.email;
+					const recv = await placeFavorite([email], name, idToken);
+					setFavoriteArr([email]);
+					console.log(recv);
+				}catch(e) {
+					console.log(e)
+				}
+			} else {
+				// 객체 돌리기
+			}
+		}
+	}
 	
 	return(<View style={{flex:1, backgroundColor: '#fff'}}>
 		<View style={styles.imageArea}>
@@ -63,16 +100,31 @@ export default function PlaceViewScreen({navigation, route}) {
 		<View style={{flex: 1, paddingHorizontal: 20}}>
 			<View>
 				<View style={styles.titleArea}>
-					<CustomText style={{fontSize: 20}} weight={600}>{placeItem.title}</CustomText>
-				<View style={{flexDirection: 'row', alignItems:'flex-end', justifyContent: 'space-between', marginTop: 10}}>
+					<View style={[styles.rowEnd, {alignItems: 'center', }]}>
+						<CustomText	tomText style={{fontSize: 20}} weight={600}>{placeItem.title}</CustomText>
+						<CustomText style={styles.range}>{range.toFixed(2)}Km</CustomText>
+					</View>
+				<View style={[styles.rowEnd, {alignItems: 'flex-end'}]}>
 					<CustomText style={{fontSize: 14, color: "#777"}} weight={600}>{placeItem.writer}</CustomText>
-					<CustomText style={{fontSize: 12, color: "#777", marginLeft: 6}}>{placeItem.createdAt.slice(0, 10)}</CustomText>
+					<CustomText style={{fontSize: 12, color: "#777"}}>{placeItem.createdAt.slice(0, 10)}</CustomText>
 				</View>
 				</View>
 			</View>
 			<ScrollView style={{flex: 1, paddingVertical: 18}}>
 				<CustomText style={{fontSize: 18, lineHeight: 30}}>{placeItem.title}</CustomText>
 			</ScrollView>
+			<View style={styles.footerArea}>
+				<View style={{flexDirection: 'row', alignItems: 'center'}}>
+					<CustomText style={{fontSize: 12, color: "#777"}}> 관심 1</CustomText>
+					<View style={{borderLeftColor: '#ddd', borderLeftWidth: 1, marginLeft: 18, paddingHorizontal: 8}}>
+						<View style={{overflow: 'hidden', borderRadius: 12, width: 26, height: 26 }}>
+							<Pressable android_ripple={{color: "#00000010"}} style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={favoriteHandle}>
+								<Ionicons name={favChk ? 'heart' : 'heart-outline'} size={20} color={favChk ? "#ff5d5d" : '#777'} style={{marginBottom: -2}}/>
+							</Pressable>
+						</View>
+					</View>
+				</View>
+			</View>
 		</View>
 		
 		<Modal animationType="slide" transparent={true} visible={modalVisible}
@@ -85,6 +137,9 @@ export default function PlaceViewScreen({navigation, route}) {
 						<MapView style={{width: '100%', height:'100%'}} initialRegion={init} >
 							<Marker coordinate={placeItem.location.coordination} />
 						</MapView>
+						<CustomText style={styles.rangeBig}>
+							내 위치와의 거리: {range.toFixed(2)}Km
+						</CustomText>
 						</> : <LoadingOverlay />}
 					</View>
 				</View>
@@ -102,6 +157,38 @@ const styles = StyleSheet.create({
 		paddingVertical: 18,
 		borderBottomColor: '#ddd',
 		borderBottomWidth: 1
+	},
+	footerArea: {
+		flexDirection: 'row', 
+		justifyContent: 'flex-end', 
+		marginTop: 4,
+		borderTopColor: '#ddd',
+		borderTopWidth: 1,
+		paddingVertical: 16,
+	},
+	rowEnd: {
+		flexDirection: 'row', 
+		justifyContent: 'space-between', 
+		marginTop: 10
+	},
+	range: {
+		fontSize: 12,
+		backgroundColor: '#ffbf00',
+		paddingVertical: 2,
+		paddingHorizontal: 4,
+		borderRadius: 4,
+		color: '#fff',
+	},
+	rangeBig: {
+		fontSize: 18,
+		backgroundColor: '#ffbf00',
+		paddingVertical: 4,
+		paddingHorizontal: 8,
+		borderRadius: 8,
+		color: '#fff',
+		position: 'absolute',
+		top: 34,
+		right: 30,
 	},
 	address: {
 		flexDirection: 'row',

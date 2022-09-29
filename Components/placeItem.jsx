@@ -1,11 +1,12 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
 
 import CustomText from "./customText";
 
 export default function PlaceItem({data}) {
 	const navigation = useNavigation();
-	const {name, placeItem} = data.item;
+	const {name, placeItem, range} = data.item;
 	const detailHnadle = () => {
 		navigation.navigate('PlaceView', {data: data.item});
 	}
@@ -17,13 +18,24 @@ export default function PlaceItem({data}) {
 					<Image source={{uri: placeItem.imgURI}} resizeMode="cover" style={{flex: 1}}/>
 				</View>
 				<View style={{flex: 1, marginTop: 2}}>
-					<CustomText style={{ fontSize: 18}} weight={600}>{placeItem.title}</CustomText>
+					<View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+						<CustomText style={{ fontSize: 18}} weight={600}>{placeItem.title}</CustomText>
+						<CustomText style={{fontSize: 12, color: '#ffbf00', marginLeft: 4, marginBottom: 1}} weight={600}>{range.toFixed(2)}Km</CustomText>
+					</View>
 					<View style={{flexDirection: 'row', marginTop: 4, marginBottom: 8}}>
 						<CustomText style={{fontSize: 12, color: "#777"}}>{placeItem.location.address.split(' ')[2]}</CustomText>
 						<CustomText style={{fontSize: 12, color: "#777", marginHorizontal : 4}}>·</CustomText>
 						<CustomText style={{fontSize: 12, color: "#777"}}>{placeItem.createdAt.slice(0, 10)}</CustomText>
 					</View>
-					<Text style={{fontFamily: 'SUIT-Regular', textAlign: 'justify', fontSize: 16}} numberOfLines={1}>{placeItem.info}</Text>
+					<View>
+						<Text style={{fontFamily: 'SUIT-Regular', textAlign: 'justify', fontSize: 16}} numberOfLines={1}>{placeItem.info}</Text>
+					</View>
+					<View style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: 4}}>
+						<View style={{flexDirection: 'row', alignItems: 'center'}}>
+							<Ionicons name="heart-outline" size={10} color="#777" />
+							<CustomText style={{fontSize: 10, color: "#777"}} weight={300}> 1</CustomText>
+						</View>
+					</View>
 				</View>
 			</View>
 		</Pressable>
