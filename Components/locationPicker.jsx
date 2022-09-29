@@ -98,13 +98,6 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 		setCoordinate({latitude: result.coords.latitude, longitude: result.coords.longitude});
 		setInit({latitude: result.coords.latitude, longitude: result.coords.longitude, latitudeDelta: 0.01922, longitudeDelta: 0.01421})
 	}
-	const confirm = (lattiude, longitude) => {
-		if(!coordinate) {
-			console.log(lattiude, longitude)
-		} else {
-			setModalVisible(false);
-		}
-	}
 	const mapPressHandle = async({nativeEvent}) => {
 		console.log(nativeEvent)
 		const latitude = nativeEvent.coordinate.latitude;
@@ -112,12 +105,14 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 		setCoordinate({latitude: latitude, longitude: longitude});
 		setLat(latitude);
 		setLng(longitude);
-		const addr = await getAdresses(latitude, longitude);
-		setAddress(addr);
 		setInit({latitude: latitude, longitude: longitude, latitudeDelta: 0.01922, longitudeDelta: 0.01421});
-		onPicked({ coordination: {latitude: latitude, longitude:  longitude}, address: addr  });
 	}
-	
+	const confirm = async(lat, lng) => {
+		const addr = await getAdresses(lat, lng);
+		setAddress(addr);
+		onPicked({ coordination: {latitude: lat, longitude:  lng}, address: addr  });
+		setModalVisible(!modalVisible);
+	}
 	const searchHandle = (data, details = null) => {
 		const latitude = details.geometry.location.lat;
 		const longitude = details.geometry.location.lng;
@@ -190,7 +185,7 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 							
 						</MapView>
 						<View style={{width: '84%', position: 'absolute', bottom: 40, }}>
-							<Button title="확인" color="#ffbf00" onPress={ () => confirm(lng, lat) }/>
+							<Button title="확인" color="#ffbf00" onPress={ () => confirm(lat, lng) }/>
 						</View>
 						</> : <LoadingOverlay />}
 					</View>

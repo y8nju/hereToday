@@ -38,7 +38,7 @@ export default function HomeScreen({route}) {
 	const [allPlace, setAllPlace] = useState([]);
 	const [refresh, setRefresh] = useState(false);
 	const [location, setLocation] =useState( null);
-	const [isPermission, setIsPermission] = useState(false);
+	const [isPermission, setIsPermission] = useState();
 	const navigation = useNavigation(AppContext);
 	const ctx = useContext(AppContext);
 	const [locationPermission, requsetLocationPermission] = useForegroundPermissions();
@@ -51,44 +51,36 @@ export default function HomeScreen({route}) {
 		거리순, 전체 리스트가 선택되면 state에 상태 추가
 		상태에 따라 place 혹은 allPlace 추가
 	*/
-
-
 	useEffect(()=>{
 		// 권한 여부 확인해서, 권한이 없다면 권한 얻기
 		setLoaded(true);
 		if(locationPermission) {
 			verifyPermition();
 			console.log('locationPermission : ', locationPermission);
-			setIsPermission(true);
 		}
-		// 내 위치 받기
-		console.log('location', location)
-
 	},[locationPermission]);
 	useEffect(()=> {
-		if(isPermission) {
+		setIsPermission(Date.now())
+	}, [focused])
+	useEffect(()=>{
+		if(location == null) {
 			myLocation();
 		}
-	}, [focused])
-
-	const verifyPermition = async() => {
-		// 위치 정보 권한 얻기
-		if(locationPermission.status !== 'granted') {
-			const permission = await requsetLocationPermission();
-			if(!permission.granted) {
-				return flase;
-			}
-			return true;
-		}
-	}
-	const myLocation = async () => {
-		// 내 위치 확인하기
-		const result = await getCurrentPositionAsync();
-		setLocation({lat: result.coords.latitude, lng: result.coords.longitude})
-	}
-
+	},[isPermission])
 	useEffect(()=> {
-		console.log('effect1');
+		setLoaded(true);
+		// 위치 받아서 location이 등록 됐으면 게시물 가져오기
+		if(location !== null) {
+			getPlaceArr();
+		}
+		setLoaded(false);
+	}, [location])
+	useEffect(()=> {
+		setLoaded(true);
+		onRead(places);
+		setLoaded(false);
+	},[allPlace])
+	useEffect(()=> {
 		if(route.params !== undefined) {
 			switch(route.params.status) {
 				case 'login':
@@ -106,18 +98,22 @@ export default function HomeScreen({route}) {
 			}
 		}
 	}, [route, focused]);
-	useEffect(()=> {
-		setLoaded(true);
-		console.log('effect2');
-		// 위치 받아서 location이 등록 됐으면 게시물 가져오기
-		if(location !== null) {
-			getPlaceArr();
-			if(allPlace) {
-				onRead();
+
+	const verifyPermition = async() => {
+		// 위치 정보 권한 얻기
+		if(locationPermission.status !== 'granted') {
+			const permission = await requsetLocationPermission();
+			if(!permission.granted) {
+				return flase;
 			}
+			return true;
 		}
-		setLoaded(false);
-	}, [location, focused])
+	}
+	const myLocation = async () => {
+		// 내 위치 확인하기
+		const result = await getCurrentPositionAsync();
+		setLocation({lat: result.coords.latitude, lng: result.coords.longitude})
+	}
 	const onAddItemHandle = ()=> {
 		navigation.navigate('PlaceAdd');
 	}
