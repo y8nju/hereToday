@@ -60,7 +60,7 @@ export default function HomeScreen({route}) {
 		}
 	},[locationPermission]);
 	useEffect(()=> {
-		setIsPermission(Date.now())
+		setIsPermission(Date.now());
 	}, [focused])
 	useEffect(()=>{
 		if(location == null) {
@@ -74,13 +74,14 @@ export default function HomeScreen({route}) {
 			getPlaceArr();
 		}
 		setLoaded(false);
-	}, [location])
+	}, [location, focused])
 	useEffect(()=> {
 		setLoaded(true);
 		onRead(places);
 		setLoaded(false);
 	},[allPlace])
 	useEffect(()=> {
+		setRefresh(true);
 		if(route.params !== undefined) {
 			switch(route.params.status) {
 				case 'login':
@@ -97,6 +98,7 @@ export default function HomeScreen({route}) {
 					return ToastAndroid.show("여기를 공유했어요", ToastAndroid.SHORT);
 			}
 		}
+		setRefresh(false);
 	}, [route, focused]);
 
 	const verifyPermition = async() => {
@@ -117,13 +119,12 @@ export default function HomeScreen({route}) {
 	const onAddItemHandle = ()=> {
 		navigation.navigate('PlaceAdd');
 	}
-	function getPlaceArr() {
-		placeList()
-			.then((recv) => {
-				const placeArr = Object.keys(recv).map((name) => { return {name, ...recv[name]}});
-				placeArr.sort((a, b) => a.createdAt - b.createdAt).reverse();
-				setAllPlace(addRangeFieldAndSort(placeArr, location?.lat, location?.lng));
-			})
+	const getPlaceArr = async() => {
+		const result = await placeList();
+		console.log(result);
+		const placeArr = Object.keys(result).map((name) => { return {name, ...result[name]}});
+		placeArr.sort((a, b) => a.createdAt - b.createdAt).reverse();
+		setAllPlace(addRangeFieldAndSort(placeArr, location?.lat, location?.lng));
 	}
 	function onRead() {
 		const arr = allPlace.filter(one => {

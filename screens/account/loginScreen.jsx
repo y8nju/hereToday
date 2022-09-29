@@ -12,7 +12,7 @@ import CustomText from "../../Components/customText";
 import LoadingOverlay from "../../Components/loadingOverlay";
 
 export default function LoginScreen() {
-	const navigation = useNavigation(AppContext);
+	const navigation = useNavigation();
 	const [loading, setLoading] = useState(false);
 	const [inputValues, setInputValues] = useState({ email: "", password: "" });
 	const {email, password} = inputValues;

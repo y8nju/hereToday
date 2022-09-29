@@ -26,7 +26,7 @@ export async function sendAddPlaceRequest(placeData, fileData, fileURI, idToken,
 		writer,
 		createdAt: new Date()}
 	await axios.post(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place.json?auth=${idToken}`, {
-		placeItem, favorite: null
+		placeItem, favorite: ''
 	})
 	console.log(placeItem);
 }

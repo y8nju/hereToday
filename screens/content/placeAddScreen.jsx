@@ -9,6 +9,7 @@ import { AppContext } from "../../context/appContext";
 import ImagePicker from "../../Components/imagePicker";
 import LocationPicker from "../../Components/locationPicker";
 import HeaderRightButton from "../../Components/headerRightButton";
+import LoadingOverlay from "../../Components/loadingOverlay";
 
 export default function PlaceAddScreen({navigation}) {
 	const [loading, setLoading] = useState(false);
@@ -69,16 +70,19 @@ export default function PlaceAddScreen({navigation}) {
 							} catch (e) {
 								console.log(e);
 							}
-							setLoading(false);
 						}();
-						navigation.navigate("Home", {status: 'create'});
+						setTimeout(()=>{
+							setLoading(false);
+							navigation.navigate("Home", {status: 'create'});
+						}, 1500)
 					}
 				}
 			}
 		])
 	}
 	return (<TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
-		<View style={[defaultStyle.wrap, {flex: 1, backgroundColor: '#fff', position: 'relative'}]}>
+		{loading? <LoadingOverlay /> :
+			<View style={[defaultStyle.wrap, {flex: 1, backgroundColor: '#fff', position: 'relative'}]}>
 			<View style={{flex:1, paddingHorizontal: 24}}>	
 				<View style={{marginBottom: 10}}>
 					<View style={{borderBottomColor: '#ddd', borderBottomWidth: 1, marginBottom: 10}}>
@@ -103,7 +107,7 @@ export default function PlaceAddScreen({navigation}) {
 					plceImageLocation={plceImageLocation}
 					initCoords={placeLocation?.coordination}/>
 			</View>
-		</View>
+		</View>}
 	</TouchableWithoutFeedback> )
 }
 const styles = StyleSheet.create({

@@ -6,7 +6,7 @@ import CustomText from "./customText";
 
 export default function PlaceItem({data}) {
 	const navigation = useNavigation();
-	const {name, placeItem, range} = data.item;
+	const {name, favorite, placeItem, range} = data.item;
 	const detailHnadle = () => {
 		navigation.navigate('PlaceView', {data: data.item});
 	}
@@ -32,8 +32,10 @@ export default function PlaceItem({data}) {
 					</View>
 					<View style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: 4}}>
 						<View style={{flexDirection: 'row', alignItems: 'center'}}>
-							<Ionicons name="heart-outline" size={10} color="#777" />
-							<CustomText style={{fontSize: 10, color: "#777"}} weight={300}> 1</CustomText>
+							{typeof favorite == 'object' ? <>
+								<Ionicons name="heart-outline" size={10} color="#777" />
+								<CustomText style={{fontSize: 10, color: "#777"}} weight={300}> {favorite?.length}</CustomText>
+							</> : ''}
 						</View>
 					</View>
 				</View>

@@ -13,7 +13,7 @@ import CustomText from "./customText";
 import LoadingOverlay from "./loadingOverlay";
 
 export default function LocationPicker2({onPicked, initCoords, plceImageLocation}) {
-	// console.log('plceImageLocation', plceImageLocation)
+	console.log('plceImageLocation', plceImageLocation)
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mapUri, setMapUri] = useState(null);
 	const [address, setAddress] = useState(null);
@@ -55,7 +55,7 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 							setLat(plceImageLocation.latitude);
 							setLng(plceImageLocation.longitude);
 							setCoordinate(plceImageLocation);
-							
+							setInit({latitude: plceImageLocation.latitude, longitude: plceImageLocation.longitude, latitudeDelta: 0.01922, longitudeDelta: 0.01421})
 							!async function() {
 								const temp = createStaticMapUri(plceImageLocation.latitude, plceImageLocation.longitude);
 								const addr = await getAdresses(plceImageLocation.latitude, plceImageLocation.longitude);

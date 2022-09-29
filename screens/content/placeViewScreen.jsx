@@ -63,16 +63,16 @@ export default function PlaceViewScreen({navigation, route}) {
 		// navigation.navigate('TalkUpdate', {data: data});
 	}
 	const favoriteHandle =async () => {
+		const email = ctx.auth.email;
 		if(favChk) {
 			setFavChk(false);
-			if(typeof favoriteArr == 'object') {
-
-			}
+			const reFavArr = favoriteArr.filter((one) => one !== email);
+			const recv = await placeFavorite(reFavArr, name, idToken);
+			setFavoriteArr(reFavArr);
 		}else {
 			setFavChk(true);
 			if(typeof favoriteArr == 'string') {
 				try {
-					const email = ctx.auth.email;
 					const recv = await placeFavorite([email], name, idToken);
 					setFavoriteArr([email]);
 					console.log(recv);
@@ -80,7 +80,9 @@ export default function PlaceViewScreen({navigation, route}) {
 					console.log(e)
 				}
 			} else {
-				// 객체 돌리기
+				const reFavArr = [...favoriteArr, email];
+				const recv = await placeFavorite(reFavArr, name, idToken);
+				setFavoriteArr(reFavArr);
 			}
 		}
 	}
@@ -111,7 +113,7 @@ export default function PlaceViewScreen({navigation, route}) {
 			</ScrollView>
 			<View style={styles.footerArea}>
 				<View style={{flexDirection: 'row', alignItems: 'center'}}>
-					<CustomText style={{fontSize: 12, color: "#777"}}> 관심 1</CustomText>
+					<CustomText style={{fontSize: 12, color: "#777"}}> {favoriteArr.length == 0 ? '' : '관심 ' + favoriteArr.length}</CustomText>
 					<View style={{borderLeftColor: '#ddd', borderLeftWidth: 1, marginLeft: 18, paddingHorizontal: 8}}>
 						<View style={{overflow: 'hidden', borderRadius: 12, width: 26, height: 26 }}>
 							<Pressable android_ripple={{color: "#00000010"}} style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={favoriteHandle}>
