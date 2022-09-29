@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Image, Modal, Pressable, StyleSheet, View } from "react-native";
-import { getCurrentPositionAsync, PermissionStatus, useForegroundPermissions } from "expo-location";
+import { getCurrentPositionAsync, useForegroundPermissions } from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';

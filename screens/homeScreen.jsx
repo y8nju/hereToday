@@ -1,16 +1,15 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, FlatList, Image, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
+import { FlatList, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
 import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
 import { getCurrentPositionAsync, useForegroundPermissions } from "expo-location";
 import { Ionicons } from '@expo/vector-icons';
 
 import { placeList } from "../util/places";
 
-import defaultStyle from "./styleSheet";
-
 import { AppContext } from "../context/appContext";
 import PlaceItem from "../Components/placeItem";
 import LoadingOverlay from "../Components/loadingOverlay";
+import NotLogin from "../Components/notLogin";
 
 function addRangeFieldAndSort(arr, lat= 35.1653428, lng = 126.9092003) {
 	// 위도 경도 거리 구하기
@@ -119,9 +118,6 @@ export default function HomeScreen({route}) {
 		}
 		setLoaded(false);
 	}, [location, focused])
-	const loginHandle = () => {
-		navigation.navigate("Account");
-	}
 	const onAddItemHandle = ()=> {
 		navigation.navigate('PlaceAdd');
 	}
@@ -140,14 +136,7 @@ export default function HomeScreen({route}) {
 		setPlaces(arr);
 	}
 	if(!ctx.auth) {
-		return (<View style={[defaultStyle.wrap, {justifyContent: 'center'}]}>
-			<View style={{alignItems:'center'}}>
-				<Image source={require('../assets/images/notLogin.png')} resizeMode="cover" style={{width: 280, height: 280}}  />
-			</View>
-			<View style={defaultStyle.accountBtnArea}>
-				<Button title="로그인 하기" color="#ffbf00" onPress={loginHandle} />
-			</View>
-		</View>)
+		return (<NotLogin />)
 	}
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>

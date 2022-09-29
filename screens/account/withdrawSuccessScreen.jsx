@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { Image, ToastAndroid, View } from "react-native";
 import { CommonActions } from "@react-navigation/native";
+
 import defaultStyle from "../styleSheet";
+
 import CustomText from "../../Components/customText";
-import { useEffect } from "react";
 
 export default function WithdrawSuccessScreen({navigation, route}) {
 

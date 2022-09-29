@@ -1,15 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { Dimensions, Image, Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { useForegroundPermissions } from "expo-location";
 import { Ionicons } from '@expo/vector-icons';
 
-import defaultStyle from '../styleSheet/index';
+
+import { placeFavorite } from "../../util/places";
 
 import { AppContext } from "../../context/appContext";
 import CustomText from "../../Components/customText";
 import HeaderRightButton from "../../Components/headerRightButton";
-import { getCurrentPositionAsync, useForegroundPermissions } from "expo-location";
-import MapView, { Marker } from "react-native-maps";
-import { placeFavorite } from "../../util/places";
 
 const windowWidth = Dimensions.get('window').width;
 

@@ -1,10 +1,10 @@
+import { useContext, useState } from "react";
 import { Alert, Button, Keyboard, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
+
+import { messageDelete, messageUpdate } from "../../util/messages";
 
 import defaultStyle from "../styleSheet";
 
-import CustomText from "../../Components/customText";
-import { useContext, useState } from "react";
-import { messageDelete, messageUpdate } from "../../util/messages";
 import { AppContext } from "../../context/appContext";
 
 export default function TalkUpdateScreen({navigation, route}) {

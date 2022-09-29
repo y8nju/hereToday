@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { FlatList, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { messageList } from '../../util/messages';
 
 import { AppContext } from '../../context/appContext';
 import TalkItem from '../../Components/talkItem';
-import { CommonActions } from '@react-navigation/native';
+import NotLogin from '../../Components/notLogin';
 
 export default function TalkScreen({navigation, route}) {
 	const [messages, setMessages] = useState([]);
@@ -39,6 +40,10 @@ export default function TalkScreen({navigation, route}) {
 			messageArr.sort((a, b)=>a.createdAt - b.createdAt).reverse();
 			setMessages(messageArr);
 		})
+	}
+	
+	if(!ctx.auth) {
+		return (<NotLogin />)
 	}
 
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>

@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 import { Alert, Image, Pressable, StyleSheet, ToastAndroid, View } from "react-native";
 import { CommonActions } from "@react-navigation/native";
-
 import { Ionicons } from '@expo/vector-icons';
+
 import defaultStyle from "../styleSheet";
 
 import { AppContext } from "../../context/appContext";

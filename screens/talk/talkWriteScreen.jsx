@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { Alert, Keyboard, Pressable, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
+import { Alert, Keyboard, StyleSheet, TextInput, TouchableWithoutFeedback, View } from "react-native";
+
+import { messageWrite } from "../../util/messages";
 
 import defaultStyle from '../styleSheet';
 
 import { AppContext } from "../../context/appContext";
-import { messageWrite } from "../../util/messages";
-import CustomText from "../../Components/customText";
 import HeaderRightButton from "../../Components/headerRightButton";
 
 export default function TalkWriteScreen ({navigation}) {

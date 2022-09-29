@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Alert, Button, Image, Modal, Pressable, StyleSheet, View } from "react-native";
 import { getCurrentPositionAsync, PermissionStatus, useForegroundPermissions } from "expo-location";
 import MapView, { Marker } from "react-native-maps";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Ionicons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -10,7 +11,6 @@ import { createStaticMapUri, getAdresses } from "../util/maps";
 
 import CustomText from "./customText";
 import LoadingOverlay from "./loadingOverlay";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 export default function LocationPicker2({onPicked, initCoords, plceImageLocation}) {
 	// console.log('plceImageLocation', plceImageLocation)

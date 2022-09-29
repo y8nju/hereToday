@@ -1,7 +1,9 @@
 import { createContext, useEffect, useReducer, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingOverlay from "../Components/loadingOverlay";
+
 import { sendLoginRequest } from "../util/account";
+
+import LoadingOverlay from "../Components/loadingOverlay";
 
 export const AppContext = createContext({
 	
