@@ -33,6 +33,28 @@ export function AppContextProvider({children}) {
 		AsyncStorage.setItem('authentication', JSON.stringify(reUserData));
 	}
 	
+
+	function addRangeFieldAndSort(arr, lat= 35.1653428, lng = 126.9092003) {
+		// 위도 경도 거리 구하기
+		function deg2rad(deg) {
+			return deg * (Math.PI / 180)
+		}
+
+		const cvt = arr.map((one) => {
+			const targetLat = one.placeItem.location.coordination.latitude;
+			const targetLng = one.placeItem.location.coordination.longitude;
+
+			var R = 6371; // Radius of the earth in km
+			var dLat = deg2rad(targetLat - lat);  // deg2rad below
+			var dLon = deg2rad(targetLng - lng);
+			var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(targetLat)) * Math.cos(deg2rad(lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			var d = R * c; // Distance in km
+			return { ...one, range: d };
+		});
+	return cvt;
+}
+	
 	useEffect(()=> {
 		AsyncStorage.getItem('authentication').then((data)=> {
 			const userData = JSON.parse(data);
@@ -55,7 +77,7 @@ export function AppContextProvider({children}) {
 		return <LoadingOverlay />
 	}
 
-	return (<AppContext.Provider value={{auth, dispatch}}>
+	return (<AppContext.Provider value={{auth, dispatch, addRangeFieldAndSort}}>
 		{children}
 	</AppContext.Provider>);
 }

@@ -22,9 +22,9 @@ export default function PlaceViewScreen({navigation, route}) {
 	
 	const ctx = useContext(AppContext);
 	const {idToken} = ctx.auth;
-	console.log(route.params.data);
 
 	useEffect(() => {
+		console.log('route.params.data', route.params.data);
 		if(placeItem.writer === ctx.auth.email){
 			navigation.setOptions({
 				headerRight: () => <HeaderRightButton onPress={updateHandle}>수정</HeaderRightButton>
@@ -100,7 +100,7 @@ export default function PlaceViewScreen({navigation, route}) {
 				<View style={styles.titleArea}>
 					<View style={[styles.rowEnd, {alignItems: 'center', }]}>
 						<CustomText	tomText style={{fontSize: 20}} weight={600}>{placeItem.title}</CustomText>
-						<CustomText style={styles.range}>{range.toFixed(2)}Km</CustomText>
+						{range && <CustomText style={styles.range}>{range.toFixed(2)}Km</CustomText>}
 					</View>
 				<View style={[styles.rowEnd, {alignItems: 'flex-end'}]}>
 					<CustomText style={{fontSize: 14, color: "#777"}} weight={600}>{placeItem.writer}</CustomText>
@@ -135,9 +135,9 @@ export default function PlaceViewScreen({navigation, route}) {
 						<MapView style={{width: '100%', height:'100%'}} initialRegion={init} >
 							<Marker coordinate={placeItem.location.coordination} />
 						</MapView>
-						<CustomText style={styles.rangeBig}>
+						{range &&  <CustomText style={styles.rangeBig}>
 							내 위치와의 거리: {range.toFixed(2)}Km
-						</CustomText>
+						</CustomText>}
 						</> : <LoadingOverlay />}
 					</View>
 				</View>

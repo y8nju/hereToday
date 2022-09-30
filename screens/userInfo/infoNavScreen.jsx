@@ -1,7 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import TalkListScreen from './talkListScreen';
-import SettingsScreen from './settingsScreen';
+import PlaceListScreen from './placeListScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -19,15 +19,15 @@ export default function InfoNavScreen() {
 			},
 			tabBarBounces: true
 		}}>
-			<Tab.Screen name="talkList" component={TalkListScreen} options={{
-				tabBarLabel: '이야기',
+			<Tab.Screen name="PlaceList" component={PlaceListScreen} options={{
+				tabBarLabel: '여기',
 				tabBarLabelStyle: {
 					fontFamily: 'SUIT-Regular',
 					fontSize: 14
 				}
 			}} />
-			<Tab.Screen name="Settings" component={SettingsScreen} options={{
-				tabBarLabel: '설정',
+			<Tab.Screen name="TalkList" component={TalkListScreen} options={{
+				tabBarLabel: '이야기',
 				tabBarLabelStyle: {
 					fontFamily: 'SUIT-Regular',
 					fontSize: 14

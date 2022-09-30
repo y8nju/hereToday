@@ -11,27 +11,6 @@ import PlaceItem from "../Components/placeItem";
 import LoadingOverlay from "../Components/loadingOverlay";
 import NotLogin from "../Components/notLogin";
 
-function addRangeFieldAndSort(arr, lat= 35.1653428, lng = 126.9092003) {
-	// 위도 경도 거리 구하기
-	function deg2rad(deg) {
-		return deg * (Math.PI / 180)
-	}
-
-	const cvt = arr.map((one) => {
-		const targetLat = one.placeItem.location.coordination.latitude;
-		const targetLng = one.placeItem.location.coordination.longitude;
-
-		var R = 6371; // Radius of the earth in km
-		var dLat = deg2rad(targetLat - lat);  // deg2rad below
-		var dLon = deg2rad(targetLng - lng);
-		var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(targetLat)) * Math.cos(deg2rad(lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		var d = R * c; // Distance in km
-		return { ...one, range: d };
-	});
-	return cvt;
-}
-
 export default function HomeScreen({route}) {
 	const [loaded, setLoaded] = useState(false);
 	const [places, setPlaces] = useState([]);
@@ -79,6 +58,7 @@ export default function HomeScreen({route}) {
 		setLoaded(true);
 		onRead(places);
 		setLoaded(false);
+		console.log(places)
 	},[allPlace])
 	useEffect(()=> {
 		// setRefresh(true);
@@ -127,7 +107,7 @@ export default function HomeScreen({route}) {
 			console.log(result);
 			const placeArr = Object.keys(result).map((name) => { return {name, ...result[name]}});
 			placeArr.sort((a, b) => a.createdAt - b.createdAt).reverse();
-			setAllPlace(addRangeFieldAndSort(placeArr, location?.lat, location?.lng));
+			setAllPlace(ctx.addRangeFieldAndSort(placeArr, location?.lat, location?.lng));
 		}
 	}
 	function onRead() {
