@@ -109,7 +109,7 @@ export default function PlaceViewScreen({navigation, route}) {
 				</View>
 			</View>
 			<ScrollView style={{flex: 1, paddingVertical: 18}}>
-				<CustomText style={{fontSize: 18, lineHeight: 30}}>{placeItem.title}</CustomText>
+				<CustomText style={{fontSize: 18, lineHeight: 30}}>{placeItem.info}</CustomText>
 			</ScrollView>
 			<View style={styles.footerArea}>
 				<View style={{flexDirection: 'row', alignItems: 'center'}}>

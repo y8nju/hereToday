@@ -38,7 +38,7 @@ export default function TalkScreen({navigation, route}) {
 		messageList(idToken)
 		.then( (recv) => {
 			const messageArr = Object.keys(recv).map((name) => { return {name, ...recv[name]}});
-			messageArr.sort((a, b)=>a.createdAt - b.createdAt).reverse();
+			messageArr.sort((a, b) => a.createdAt - b.createdAt).reverse();
 			setMessages(messageArr);
 		})
 	}

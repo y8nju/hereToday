@@ -18,6 +18,7 @@ export default function PlaceListScreen() {
 	useEffect(()=> {
 		getPlaceArr();
 	}, []);
+	
 	const getPlaceArr = async() => {
 		let idToken = ctx.auth?.idToken;
 		if(idToken) {
@@ -28,24 +29,25 @@ export default function PlaceListScreen() {
 			setPlaces(myPlace);
 		}
 	}
-	function PlaceItem({place}) {
-		const placeData = place.item;
+	function PlaceItem({data}) {
+		const placeData = data.item;
 		return (<Pressable style={styles.itemArea} onPress={()=>navigation.navigate('PlaceView', {data: placeData})}>
 			<ImageBackground source={{uri: placeData.placeItem.imgURI}} resizeMode="cover" style={{flex: 1}} /> 
 		</Pressable>)
 	}
+
 	return (<View style={{flex: 1, backgroundColor: '#fff'}}>
 		{places ? <FlatList style={{flex: 1}} data={places}
 			keyExtractor={({name})=> name}
 			numColumns = {3}
-			renderItem={one => <PlaceItem place={one} />}
+			renderItem={one => <PlaceItem data={one} />}
 			/>
 		: <></>}
 	</View>)
 }
 const styles = StyleSheet.create({
 	itemArea: {
-		flex: 1,
+		flex: 1/3,
 		height: windowWidth/3,
 		backgroundColor: '#ddd',
 		margin: 1,

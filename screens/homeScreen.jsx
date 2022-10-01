@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FlatList, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
+import { FlatList, Keyboard, Modal, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
 import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
 import { getCurrentPositionAsync, useForegroundPermissions } from "expo-location";
 import { Ionicons } from '@expo/vector-icons';
@@ -10,9 +10,13 @@ import { AppContext } from "../context/appContext";
 import PlaceItem from "../Components/placeItem";
 import LoadingOverlay from "../Components/loadingOverlay";
 import NotLogin from "../Components/notLogin";
+import HeaderRightButton from "../Components/headerRightButton";
+import CustomText from "../Components/customText";
 
 export default function HomeScreen({route}) {
 	const [loaded, setLoaded] = useState(false);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [type, setType] = useState(true);
 	const [places, setPlaces] = useState([]);
 	const [allPlace, setAllPlace] = useState([]);
 	const [refresh, setRefresh] = useState(false);
@@ -30,6 +34,13 @@ export default function HomeScreen({route}) {
 		거리순, 전체 리스트가 선택되면 state에 상태 추가
 		상태에 따라 place 혹은 allPlace 추가
 	*/
+	useEffect(() => {
+		navigation.setOptions({
+			headerRight: ()=> <HeaderRightButton onPress={selectHandle}>
+				{type ? '2Km' : '전체'} <Ionicons name="chevron-down" size={12} color="black" />
+				</HeaderRightButton>
+		});
+	})
 	useEffect(()=>{
 		// 권한 여부 확인해서, 권한이 없다면 권한 얻기
 		setLoaded(true);
@@ -49,7 +60,7 @@ export default function HomeScreen({route}) {
 	useEffect(()=> {
 		setLoaded(true);
 		// 위치 받아서 location이 등록 됐으면 게시물 가져오기
-		if(location !== null) {
+		if(location !== null && ctx.auth) {
 			getPlaceArr();
 		}
 		setLoaded(false);
@@ -116,13 +127,25 @@ export default function HomeScreen({route}) {
 		})
 		setPlaces(arr);
 	}
+	const selectHandle = async() => {
+		setModalVisible(true);
+		verifyPermition();
+	}
+	const sel2kmHandle = () => {
+		setType(true);
+		setModalVisible(false);
+	}
+	const selAllListHandle = () => {
+		setType(false);
+		setModalVisible(false);
+	}
 	if(!ctx.auth) {
 		return (<NotLogin />)
 	}
 	return ( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>
 		<View style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
 			{loaded ? <LoadingOverlay />: <View style={{flex:1}}>	
-				<FlatList style={{flex: 1}} data={places}  
+				<FlatList style={{flex: 1}} data={type ? places : allPlace}  
 					keyExtractor={({name})=> name}
 					refreshing={ refresh }
 					onRefresh={()=> {
@@ -141,6 +164,24 @@ export default function HomeScreen({route}) {
 					<Ionicons name="add" size={32} color="#fff" />
 				</Pressable>
 			</View>}
+			<Modal animationType="slide" transparent={true} visible={modalVisible}
+				onRequestClose={() => setModalVisible(!modalVisible)}>
+				<View style={styles.modalArea}>
+					<Pressable style={styles.touchArea} onPress={() => setModalVisible(!modalVisible)}></Pressable>
+					<View style={styles.buttonArea}>
+						<View style={styles.buttonWrap}>
+							<Pressable android_ripple={{color: "#00000008"}} style={styles.button} onPress={sel2kmHandle}>
+								{({ pressed }) => (<CustomText style={[{fontSize: 16, textAlign: 'right'}, pressed && {color: '#ffbf00'}]}> 2Km</CustomText>)}
+							</Pressable>
+						</View>
+						<View style={styles.buttonWrap}>
+							<Pressable android_ripple={{color: "#00000008"}} style={styles.button} onPress={selAllListHandle}>
+								{({ pressed }) => (<CustomText style={[{fontSize: 16, textAlign: 'right'}, pressed && {color: '#ffbf00'}]}> 전체</CustomText>)}
+							</Pressable>
+						</View>
+					</View>
+				</View>
+			</Modal>
 		</View>
 	</TouchableWithoutFeedback> );
 }
@@ -162,5 +203,38 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.2,
 		shadowRadius: 0.3,
 		elevation: 2,
+	},
+	modalArea: {
+		flexDirection:'row', 
+		justifyContent: 'flex-end',
+		alignItems: 'baseline',
+		flex: 1,
+		height: '100%', 
+	},
+	touchArea: {
+		width:'100%', 
+		height: '100%', 
+		position: 'absolute', 
+		bottom: 0, 
+		backgroundColor: '#00000075'
+	},
+	buttonArea: {
+		backgroundColor:'#fff',
+		justifyContent:'center',
+		alignItems:'center',
+		paddingVertical: 10,
+		borderRadius: 8,
+		marginTop: 45,
+		marginRight: 12
+	},
+	buttonWrap: {
+		borderRadius: 4,
+		overflow: 'hidden'
+	},
+	button: {
+		marginHorizontal: 8,
+		paddingVertical: 12,
+		paddingRight: 12,
+		paddingLeft: 40
 	}
 })
