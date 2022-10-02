@@ -13,20 +13,23 @@ import LoadingOverlay from "../../Components/loadingOverlay";
 export default function RegisterScreen({navigation}) {
 	const [loading, setLoading] = useState(false);
 	const [email, setEmail] =useState();
-	const [pass, setPass] = useState();
-	const [passChk, setPassChk] = useState();
+	const [pass, setPass] = useState('');
+	const [passChk, setPassChk] = useState('');
 	const [passchkText, setPassChkText] = useState('');
 	const ctx = useContext(AppContext);
-
 	useEffect(() => {
 		navigation.setOptions({
 			title: "회원가입"
 		});
-		if(pass !== undefined && passChk !== undefined) {
-			if(pass == passChk) {
+		if(pass) {
+			if(!passChk) {
 				setPassChkText('')
-			} else if (pass !== passChk) {
-				setPassChkText( '비밀번호가 일치하지 않습니다')
+			}else {
+				if(pass == passChk) {
+					setPassChkText('')
+				} else {
+					setPassChkText( '비밀번호가 일치하지 않습니다')
+				}
 			}
 		}
 	}, [pass, passChk]);

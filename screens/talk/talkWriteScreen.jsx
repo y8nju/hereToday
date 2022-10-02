@@ -18,7 +18,7 @@ export default function TalkWriteScreen ({navigation}) {
 			title: "안녕 글쓰기",
 			headerRight: ()=> <HeaderRightButton onPress={writeHandle}>완료</HeaderRightButton>
 		});
-	}, [titleInp, contentInp]);
+	}, []);
 	const writeHandle = () => {
 		Alert.alert("오늘여기", "이야기를 전달할까요?", [
 			{
@@ -26,20 +26,27 @@ export default function TalkWriteScreen ({navigation}) {
 			}, {
 				text: '완료',
 				onPress: () =>{ 
-					setLoading(true);
-					!async function () {
-						const writer = ctx.auth.email;
-						const idToken = ctx.auth.idToken;
-						try {
-							const recv = await messageWrite(titleInp, writer, contentInp, idToken);
-							console.log(titleInp, writer, contentInp, idToken)
-							console.log(recv);
-						} catch (e) {
-							console.log(e);
-						}
-						setLoading(false);
-					}();
-					navigation.navigate("Talk", {status: 'create'});
+					if(!titleInp || !contentInp) {
+						Alert.alert('오늘여기', '모든 필드는 필수입니다')
+					}else {
+						setLoading(true);
+						!async function () {
+							const writer = ctx.auth.email;
+							const idToken = ctx.auth.idToken;
+							try {
+								const recv = await messageWrite(titleInp, writer, contentInp, idToken);
+								console.log(titleInp, writer, contentInp, idToken)
+								console.log(recv);
+							} catch (e) {
+								console.log(e);
+							}
+							setLoading(false);
+						}();
+						setTimeout(()=>{
+							setLoading(false);
+							navigation.navigate("Talk", {status: 'create'});
+						}, 1500)
+					}
 				}
 			}
 		])

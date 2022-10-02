@@ -9,7 +9,7 @@ import CustomText from "../../Components/customText";
 export default function WithdrawSuccessScreen({navigation, route}) {
 
 	useEffect(() => {
-		if(route.params !== undefined) {
+		if(route.params) {
 			switch(route.params.status) {
 				case 'success':
 					navigation.dispatch(CommonActions.setParams({ status: '' }));

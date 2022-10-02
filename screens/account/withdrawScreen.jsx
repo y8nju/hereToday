@@ -21,7 +21,7 @@ export default function WithdrawScreen({navigation}) {
 
 	const checkHandle = () => {
 		setIsDisabled(!isDisabled);
-		if(isDisabled === true) {
+		if(isDisabled) {
 			setChkCOlor('#ffbf00');
 		}else {
 			setChkCOlor('#bbb');
@@ -42,7 +42,8 @@ export default function WithdrawScreen({navigation}) {
 							const recv = await sendDeleteRequest(idToken);
 							console.log(recv); 
 							ctx.dispatch({type: 'logout'});
-							navigation.navigate('WithdrawSuccess', {status: 'success'})
+							navigation.navigate("HomeStack", {screen: 'WithdrawSuccess', params: {status: 'success'}});
+
 							// 마운트 확인
 						} catch(e) {
 							Alert.alert('오늘여기', '탈퇴가 정상적으로 이루어지지 않았습니다')

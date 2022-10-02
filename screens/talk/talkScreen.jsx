@@ -15,7 +15,7 @@ export default function TalkScreen({navigation, route}) {
 	const ctx = useContext(AppContext);
 	useEffect(() => {
 		onRead();
-		if(route.params !== undefined) {
+		if(route.params) {
 			switch(route.params.status) {
 				case 'create':
 					navigation.dispatch(CommonActions.setParams({ status: '' }));

@@ -34,7 +34,7 @@ export default function PlaceAddScreen({navigation}) {
 	}
 	const imagePickeredHandle = (uri, base64) => {
 		setPlaceImageBase64(base64);
-		if(uri !== undefined) {
+		if(uri) {
 			// console.log(uri)
 			setPlaceImage(uri.uri)
 			if(uri.coordination) {
