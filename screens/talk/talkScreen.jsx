@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
-import { FlatList, Keyboard, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from 'react-native';
+import { FlatList, Keyboard, Pressable, RefreshControl, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { messageList } from '../../util/messages';
 
 import { AppContext } from '../../context/appContext';
-import TalkItem from '../../Components/talkItem';
 import NotLogin from '../../Components/notLogin';
+import TalkItem from '../../Components/talkItem';
 
 export default function TalkScreen({navigation, route}) {
 	const [messages, setMessages] = useState([]);
@@ -52,14 +52,19 @@ export default function TalkScreen({navigation, route}) {
 			<View style={{flex:1}}>	
 			{messages && <FlatList style={{flex: 1}} data={messages}  
 				keyExtractor={({name})=> name}
-				refreshing={ refresh }
-				onRefresh={()=> {
-					setRefresh(true)
-					setTimeout(()=> {
-						onRead();
-						setRefresh(false);
-					}, 2000);
-				}}
+				refreshControl={
+					<RefreshControl
+						refreshing={ refresh }
+						onRefresh={()=> {
+							setRefresh(true)
+							setTimeout(()=> {
+								onRead();
+								setRefresh(false);
+							}, 2000);
+						}}
+						colors={["#ffbf00"]}
+					/>
+				}
 				renderItem={(one)=> <TalkItem data={one} />}
 				/>}
 				

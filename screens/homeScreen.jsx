@@ -7,9 +7,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { placeList } from "../util/places";
 
 import { AppContext } from "../context/appContext";
-import PlaceItem from "../Components/placeItem";
 import LoadingOverlay from "../Components/loadingOverlay";
 import NotLogin from "../Components/notLogin";
+import PlaceItem from "../Components/placeItem";
 import HeaderRightButton from "../Components/headerRightButton";
 import CustomText from "../Components/customText";
 
@@ -160,9 +160,8 @@ export default function HomeScreen({route}) {
 								}, 2000);
 							}}
 							colors={["#ffbf00"]}
-						 />
-					  }
-					
+						/>
+					}
 					renderItem={(one)=> <PlaceItem data={one} />}
 					/>
 			</View>}

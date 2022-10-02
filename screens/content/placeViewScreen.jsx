@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Alert, Dimensions, Image, Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
 import { useForegroundPermissions } from "expo-location";
 import { Ionicons } from '@expo/vector-icons';
@@ -8,10 +9,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { placeDelete, placeFavorite } from "../../util/places";
 
 import { AppContext } from "../../context/appContext";
+import NotLogin from "../../Components/notLogin";
 import CustomText from "../../Components/customText";
 import HeaderRightButton from "../../Components/headerRightButton";
-import NotLogin from "../../Components/notLogin";
-import { useIsFocused } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get('window').width;
 
