@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, Image, Modal, Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
 import { launchCameraAsync, launchImageLibraryAsync, PermissionStatus, useCameraPermissions, useMediaLibraryPermissions, getCameraPermissionsAsync } from "expo-image-picker";
 import { Ionicons } from '@expo/vector-icons';
@@ -6,13 +6,19 @@ import { Foundation } from '@expo/vector-icons';
 
 import CustomText from "./customText";
 
-export default function ImagePicker({onPicked}) {
+export default function ImagePicker({onPicked, placeImage}) {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [imageUri, setImageUri] = useState();
 	// 카메라 접근 권한 확인
 	const [cameraPermission, requestCameraPermission] = useCameraPermissions();
 	const [imagePermission, requestImagePermission] = useMediaLibraryPermissions();
-
+	
+	useEffect(()=> {
+		if(placeImage) {
+			setImageUri(placeImage);
+		}
+	},[]);
+	
 	const  takeFromGellary = async () => {
 		if(imagePermission.status == PermissionStatus.DENIED ||
 			imagePermission.status == PermissionStatus.UNDETERMINED) {

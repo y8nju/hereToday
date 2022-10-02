@@ -43,3 +43,31 @@ export async function placeFavorite(favoriteArr, name, idToken) {
 	return response.data
 
 }
+
+export async function placeUpdate(placeData, fileData, fileURI, name, idToken, writer) {
+	const fileName = fileURI.substring(fileURI.lastIndexOf('/') + 1);
+	const endPoint = `https://firebasestorage.googleapis.com/v0/b/with-b2c7b.appspot.com/o/${fileName}`
+	const uploadResult = await axios({
+		url: endPoint,
+		method: 'post',
+		headers: {
+			"Content-type": "image/jpeg"
+		},
+		// npm i buffer
+		data: Buffer.from(fileData, "base64")
+	})
+
+	const placeItem ={...placeData, 
+		imgURI: `${endPoint}?alt=media`, 
+		writer,
+		createdAt: new Date()}
+	const response = await axios.patch(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place/${name}.json?auth=${idToken}`, {
+		placeItem
+	})
+	return response.data
+}
+
+export async function placeDelete(name, idToken) {
+	const response = await axios.delete(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place/${name}.json?auth=${idToken}`)
+	return response.data
+}

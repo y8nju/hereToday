@@ -63,8 +63,7 @@ export default function TalkUpdateScreen({navigation, route}) {
 					navigation.navigate("Talk", {status: 'delete'});
 				}
 			}
-		])
-		
+		]);
 	}
 
 	return( <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{flex:1}}>

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FlatList, Keyboard, Modal, Pressable, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
+import { FlatList, Keyboard, Modal, Pressable, RefreshControl, StyleSheet, ToastAndroid, TouchableWithoutFeedback, View } from "react-native";
 import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
 import { getCurrentPositionAsync, useForegroundPermissions } from "expo-location";
 import { Ionicons } from '@expo/vector-icons';
@@ -36,7 +36,7 @@ export default function HomeScreen({route}) {
 	*/
 	useEffect(() => {
 		navigation.setOptions({
-			headerRight: ()=> <HeaderRightButton onPress={selectHandle}>
+			headerRight: ()=> <HeaderRightButton onPress={()=>setModalVisible(true)}>
 				{type ? '2Km' : '전체'} <Ionicons name="chevron-down" size={12} color="black" />
 				</HeaderRightButton>
 		});
@@ -88,6 +88,12 @@ export default function HomeScreen({route}) {
 				case 'create':
 					ToastAndroid.show("여기를 공유했어요", ToastAndroid.SHORT);
 					return navigation.dispatch(CommonActions.setParams({ status: '' }));
+				case 'update':
+					ToastAndroid.show("여기를 수정했어요", ToastAndroid.SHORT);
+					return navigation.dispatch(CommonActions.setParams({ status: '' }));
+				case 'deleted':
+					ToastAndroid.show("여기를 지웠어요", ToastAndroid.SHORT);
+					return navigation.dispatch(CommonActions.setParams({ status: '' }));
 			}
 		}
 		// setRefresh(false);
@@ -127,10 +133,6 @@ export default function HomeScreen({route}) {
 		})
 		setPlaces(arr);
 	}
-	const selectHandle = async() => {
-		setModalVisible(true);
-		verifyPermition();
-	}
 	const sel2kmHandle = () => {
 		setType(true);
 		setModalVisible(false);
@@ -147,14 +149,20 @@ export default function HomeScreen({route}) {
 			{loaded ? <LoadingOverlay />: <View style={{flex:1}}>	
 				<FlatList style={{flex: 1}} data={type ? places : allPlace}  
 					keyExtractor={({name})=> name}
-					refreshing={ refresh }
-					onRefresh={()=> {
-						setRefresh(true)
-						setTimeout(()=> {
-							onRead();
-							setRefresh(false);
-						}, 2000);
-					}}
+					refreshControl={
+						<RefreshControl
+							refreshing={ refresh }
+							onRefresh={()=> {
+								setRefresh(true)
+								setTimeout(()=> {
+									onRead();
+									setRefresh(false);
+								}, 2000);
+							}}
+							colors={["#ffbf00"]}
+						 />
+					  }
+					
 					renderItem={(one)=> <PlaceItem data={one} />}
 					/>
 			</View>}
@@ -164,7 +172,7 @@ export default function HomeScreen({route}) {
 					<Ionicons name="add" size={32} color="#fff" />
 				</Pressable>
 			</View>}
-			<Modal animationType="slide" transparent={true} visible={modalVisible}
+			<Modal animationType="fade" transparent={true} visible={modalVisible}
 				onRequestClose={() => setModalVisible(!modalVisible)}>
 				<View style={styles.modalArea}>
 					<Pressable style={styles.touchArea} onPress={() => setModalVisible(!modalVisible)}></Pressable>
@@ -205,11 +213,8 @@ const styles = StyleSheet.create({
 		elevation: 2,
 	},
 	modalArea: {
-		flexDirection:'row', 
-		justifyContent: 'flex-end',
-		alignItems: 'baseline',
 		flex: 1,
-		height: '100%', 
+		alignItems: 'flex-end',
 	},
 	touchArea: {
 		width:'100%', 

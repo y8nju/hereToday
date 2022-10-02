@@ -12,7 +12,7 @@ import { createStaticMapUri, getAdresses } from "../util/maps";
 import CustomText from "./customText";
 import LoadingOverlay from "./loadingOverlay";
 
-export default function LocationPicker2({onPicked, initCoords, plceImageLocation}) {
+export default function LocationPicker2({onPicked, initCoords, plceImageLocation, location}) {
 	console.log('plceImageLocation', plceImageLocation)
 	const [modalVisible, setModalVisible] = useState(false);
 	const [mapUri, setMapUri] = useState(null);
@@ -30,6 +30,19 @@ export default function LocationPicker2({onPicked, initCoords, plceImageLocation
 			console.log('locationPermission : ', locationPermission);
 		}
 	},[locationPermission]);
+	useEffect(()=> {
+		console.log('location : ', location)
+		if(location){
+			const temp = createStaticMapUri(location.coordination.latitude, location.coordination.longitude);
+			setAddress(location.address);
+			setMapUri(temp);
+			setLat(location.coordination.latitude);
+			setLng(location.coordination.longitude);
+			setCoordinate(location.coordination);
+			setInit({latitude: location.coordination.latitude, longitude: location.coordination.longitude, latitudeDelta: 0.01922, longitudeDelta: 0.01421})
+			onPicked({ coordination: {latitude: location.coordination.latitude, longitude:  location.coordination.longitude}, address: location.address });
+		}
+	},[])
 
 	useEffect(() => {
 		if(initCoords) {

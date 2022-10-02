@@ -1,33 +1,41 @@
 import { useContext, useEffect, useState } from "react";
-import { Dimensions, Image, Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Dimensions, Image, Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useForegroundPermissions } from "expo-location";
 import { Ionicons } from '@expo/vector-icons';
 
 
-import { placeFavorite } from "../../util/places";
+import { placeDelete, placeFavorite } from "../../util/places";
 
 import { AppContext } from "../../context/appContext";
 import CustomText from "../../Components/customText";
 import HeaderRightButton from "../../Components/headerRightButton";
+import NotLogin from "../../Components/notLogin";
+import { useIsFocused } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get('window').width;
 
 export default function PlaceViewScreen({navigation, route}) {
 	
-	const {name, placeItem, range, favorite} = route.params.data;
+	const data = route.params.data
+	const {name, placeItem, range, favorite} = data;
+	const [loading, setLoading] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [menuModalVisible, setMenuModalVisible] = useState(false);
 	const [favChk, setFavChk] = useState(false)
 	const [favoriteArr, setFavoriteArr] = useState(favorite);
 	
 	const ctx = useContext(AppContext);
-	const {idToken} = ctx.auth;
+	const idToken = ctx.auth?.idToken;
+	const focused = useIsFocused();
 
 	useEffect(() => {
 		console.log('route.params.data', route.params.data);
 		if(placeItem.writer === ctx.auth.email){
 			navigation.setOptions({
-				headerRight: () => <HeaderRightButton onPress={updateHandle}>수정</HeaderRightButton>
+				headerRight: () => <HeaderRightButton onPress={()=>setMenuModalVisible(true)}>
+					<Ionicons name="md-ellipsis-horizontal-sharp" size={20} color="#000" />
+				</HeaderRightButton>
 			})
 		}
 		console.log('favoriteArr', favoriteArr, typeof favoriteArr);
@@ -38,7 +46,7 @@ export default function PlaceViewScreen({navigation, route}) {
 				setFavChk(false)
 			}
 		}
-	}, [])
+	}, [focused])
 	const init ={
 		latitude: placeItem.location.coordination.latitude,
 		longitude: placeItem.location.coordination.longitude,
@@ -60,33 +68,63 @@ export default function PlaceViewScreen({navigation, route}) {
 		verifyPermition();
 	}
 	const updateHandle = () => {
-		// navigation.navigate('TalkUpdate', {data: data});
+		navigation.navigate('PlaceUpdate', {data: data});
+	}
+	const deletedHandle = () => {
+		Alert.alert("오늘여기", "여기를 지울까요?", [
+			{
+				text: '취소'
+			}, {
+				text: '지우기',
+				onPress: () =>{
+					setLoading(true);
+					!async function () {
+						try {
+							const recv = await placeDelete(name, idToken);
+							console.log(recv);
+						} catch (e) {
+							console.log(e);
+						}
+						
+						setTimeout(()=>{
+							setLoading(false);
+							navigation.navigate('Home',{status: 'deleted'});
+						}, 1500)
+					}();
+				}
+			}
+		])
 	}
 	const favoriteHandle =async () => {
-		const email = ctx.auth.email;
-		if(favChk) {
-			setFavChk(false);
-			const reFavArr = favoriteArr.filter((one) => one !== email);
-			const recv = await placeFavorite(reFavArr, name, idToken);
-			setFavoriteArr(reFavArr);
-		}else {
-			setFavChk(true);
-			if(typeof favoriteArr == 'string') {
-				try {
-					const recv = await placeFavorite([email], name, idToken);
-					setFavoriteArr([email]);
-					console.log(recv);
-				}catch(e) {
-					console.log(e)
-				}
-			} else {
-				const reFavArr = [...favoriteArr, email];
+		const email = ctx.auth?.email;
+		if(idToken) {
+			if(favChk) {
+				setFavChk(false);
+				const reFavArr = favoriteArr.filter((one) => one !== email);
 				const recv = await placeFavorite(reFavArr, name, idToken);
 				setFavoriteArr(reFavArr);
+			}else {
+				setFavChk(true);
+				if(typeof favoriteArr == 'string') {
+					try {
+						const recv = await placeFavorite([email], name, idToken);
+						setFavoriteArr([email]);
+						console.log(recv);
+					}catch(e) {
+						console.log(e)
+					}
+				} else {
+					const reFavArr = [...favoriteArr, email];
+					const recv = await placeFavorite(reFavArr, name, idToken);
+					setFavoriteArr(reFavArr);
+				}
 			}
 		}
 	}
 	
+	if(!ctx.auth) {
+		return (<NotLogin />)
+	}
 	return(<View style={{flex:1, backgroundColor: '#fff'}}>
 		<View style={styles.imageArea}>
 			<Image source={{uri: placeItem.imgURI}} resizeMode="cover" style={{flex: 1}}/>
@@ -143,6 +181,25 @@ export default function PlaceViewScreen({navigation, route}) {
 				</View>
 			</View>
 		</Modal>
+
+		<Modal animationType="fade" transparent={true} visible={menuModalVisible}
+				onRequestClose={() => setMenuModalVisible(!menuModalVisible)}>
+				<View style={styles.modalArea}>
+					<Pressable style={styles.touchArea} onPress={() => setMenuModalVisible(!menuModalVisible)}></Pressable>
+					<View style={styles.buttonArea}>
+						<View style={styles.buttonWrap}>
+							<Pressable android_ripple={{color: "#00000008"}} style={styles.button} onPress={updateHandle}>
+								{({ pressed }) => (<CustomText style={[{fontSize: 16, textAlign: 'right'}, pressed && {color: '#ffbf00'}]}> 수정하기</CustomText>)}
+							</Pressable>
+						</View>
+						<View style={styles.buttonWrap}>
+							<Pressable android_ripple={{color: "#00000008"}} style={styles.button} onPress={deletedHandle}>
+								{({ pressed }) => (<CustomText style={[{fontSize: 16, textAlign: 'right'}, pressed && {color: '#ffbf00'}]}> 삭제하기</CustomText>)}
+							</Pressable>
+						</View>
+					</View>
+				</View>
+			</Modal>
 	</View>)
 }
 const styles = StyleSheet.create({
@@ -202,11 +259,8 @@ const styles = StyleSheet.create({
 		borderRadius: 10
 	},
 	modalArea: {
-		flexDirection:'row', 
-		justifyContent: 'center',
-		alignItems: 'center',
-		marginTop: 20,
-		flex: 1
+		flex: 1,
+		alignItems: 'flex-end',
 	},
 	touchArea: {
 		width:'100%', 
@@ -222,5 +276,24 @@ const styles = StyleSheet.create({
 		borderTopRightRadius: 32,
 		backgroundColor: '#fff',
 		overflow: 'hidden'
+	},
+	buttonArea: {
+		backgroundColor:'#fff',
+		justifyContent:'center',
+		alignItems:'center',
+		paddingVertical: 10,
+		borderRadius: 8,
+		marginTop: 45,
+		marginRight: 12
+	},
+	buttonWrap: {
+		borderRadius: 4,
+		overflow: 'hidden'
+	},
+	button: {
+		marginHorizontal: 8,
+		paddingVertical: 12,
+		paddingRight: 12,
+		paddingLeft: 40
 	}
 })
