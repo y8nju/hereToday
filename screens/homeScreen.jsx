@@ -29,49 +29,13 @@ export default function HomeScreen({route}) {
 	/* navigation 이 가지고 있는 hook으로, 해당 화면에 focus된 상태인지 아닌지 확인해 볼 수 있다 */
 	const focused = useIsFocused();
 
-	/* 추가할 것
-		headerRight에 거리순, 전체 리스트 모달 넣기
-		거리순, 전체 리스트가 선택되면 state에 상태 추가
-		상태에 따라 place 혹은 allPlace 추가
-	*/
 	useEffect(() => {
 		navigation.setOptions({
 			headerRight: ()=> <HeaderRightButton onPress={()=>setModalVisible(true)}>
 				{type ? '2Km' : '전체'} <Ionicons name="chevron-down" size={12} color="black" />
 				</HeaderRightButton>
 		});
-		
-	})
-	useEffect(()=>{
-		// 권한 여부 확인해서, 권한이 없다면 권한 얻기
-		setLoaded(true);
-		if(locationPermission) {
-			verifyPermition();
-			console.log('locationPermission : ', locationPermission);
-		}
-	},[locationPermission]);
-	useEffect(()=> {
-		setIsPermission(Date.now());
-	}, [focused])
-	useEffect(()=>{
-		if(location == null) {
-			myLocation();
-		}
-	},[isPermission])
-	useEffect(()=> {
-		setLoaded(true);
-		// 위치 받아서 location이 등록 됐으면 게시물 가져오기
-		if(location !== null && ctx.auth) {
-			getPlaceArr();
-		}
-		setLoaded(false);
-	}, [location, focused])
-	useEffect(()=> {
-		setLoaded(true);
-		
-		setLoaded(false);
-		console.log('places: ', places)
-	},[allPlace])
+	});
 	useEffect(()=> {
 		// setRefresh(true);
 		console.log('route.params :', route.params)
@@ -99,6 +63,36 @@ export default function HomeScreen({route}) {
 		}
 		// setRefresh(false);
 	}, [route, focused]);
+	useEffect(()=>{
+		// 권한 여부 확인해서, 권한이 없다면 권한 얻기
+		setLoaded(true);
+		if(locationPermission) {
+			verifyPermition();
+			console.log('locationPermission : ', locationPermission);
+		}
+	},[locationPermission]);
+	useEffect(()=> {
+		setIsPermission(Date.now());
+	}, [focused]);
+	useEffect(()=>{
+		if(location == null) {
+			myLocation();
+		}
+	},[isPermission]);
+	useEffect(()=> {
+		setLoaded(true);
+		// 위치 받아서 location이 등록 됐으면 게시물 가져오기
+		if(location !== null && ctx.auth) {
+			getPlaceArr();
+		}
+		setLoaded(false);
+	}, [location, focused]);
+	useEffect(()=> {
+		setLoaded(true);
+		onRead(places);
+		setLoaded(false);
+		console.log(places)
+	},[allPlace]);
 
 	const verifyPermition = async() => {
 		// 위치 정보 권한 얻기
@@ -114,9 +108,6 @@ export default function HomeScreen({route}) {
 		// 내 위치 확인하기
 		const result = await getCurrentPositionAsync();
 		setLocation({lat: result.coords.latitude, lng: result.coords.longitude})
-	}
-	const onAddItemHandle = ()=> {
-		navigation.navigate('PlaceAdd');
 	}
 	const getPlaceArr = async() => {
 		let idToken = ctx.auth?.idToken;
@@ -134,13 +125,18 @@ export default function HomeScreen({route}) {
 		})
 		setPlaces(arr);
 	}
-	const sel2kmHandle = () => {
-		setType(true);
-		setModalVisible(false);
+	const onAddItemHandle = ()=> {
+		navigation.navigate('PlaceAdd');
 	}
-	const selAllListHandle = () => {
-		setType(false);
-		setModalVisible(false);
+	const selType = (typed) => {
+		switch(typed) {
+			case '2km':
+				setModalVisible(false);
+				return setType(true);
+			case 'all':
+				setModalVisible(false);
+				return setType(false);
+		}
 	}
 	if(!ctx.auth) {
 		return (<NotLogin />)
@@ -178,12 +174,12 @@ export default function HomeScreen({route}) {
 					<Pressable style={styles.touchArea} onPress={() => setModalVisible(!modalVisible)}></Pressable>
 					<View style={styles.buttonArea}>
 						<View style={styles.buttonWrap}>
-							<Pressable android_ripple={{color: "#00000008"}} style={styles.button} onPress={sel2kmHandle}>
+							<Pressable android_ripple={{color: "#00000008"}} style={styles.button} onPress={() => selType('2km')}>
 								{({ pressed }) => (<CustomText style={[{fontSize: 16, textAlign: 'right'}, pressed && {color: '#ffbf00'}]}> 2Km</CustomText>)}
 							</Pressable>
 						</View>
 						<View style={styles.buttonWrap}>
-							<Pressable android_ripple={{color: "#00000008"}} style={styles.button} onPress={selAllListHandle}>
+							<Pressable android_ripple={{color: "#00000008"}} style={styles.button} onPress={() => selType('all')}>
 								{({ pressed }) => (<CustomText style={[{fontSize: 16, textAlign: 'right'}, pressed && {color: '#ffbf00'}]}> 전체</CustomText>)}
 							</Pressable>
 						</View>
