@@ -40,6 +40,7 @@ export default function HomeScreen({route}) {
 				{type ? '2Km' : '전체'} <Ionicons name="chevron-down" size={12} color="black" />
 				</HeaderRightButton>
 		});
+		
 	})
 	useEffect(()=>{
 		// 권한 여부 확인해서, 권한이 없다면 권한 얻기
@@ -67,9 +68,9 @@ export default function HomeScreen({route}) {
 	}, [location, focused])
 	useEffect(()=> {
 		setLoaded(true);
-		onRead(places);
+		
 		setLoaded(false);
-		console.log(places)
+		console.log('places: ', places)
 	},[allPlace])
 	useEffect(()=> {
 		// setRefresh(true);
@@ -127,7 +128,7 @@ export default function HomeScreen({route}) {
 			setAllPlace(ctx.addRangeFieldAndSort(placeArr, location?.lat, location?.lng));
 		}
 	}
-	function onRead() {
+	const onRead = () => {
 		const arr = allPlace.filter(one => {
 			return one.range < 2
 		})
