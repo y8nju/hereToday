@@ -83,7 +83,7 @@ export default function HomeScreen({route}) {
 	useEffect(()=> {
 		setLoaded(true);
 		// 위치 받아서 location이 등록 됐으면 게시물 가져오기
-		if(!location && ctx.auth) {
+		if(location && ctx.auth) {
 			getPlaceArr();
 		}
 		setLoaded(false);
