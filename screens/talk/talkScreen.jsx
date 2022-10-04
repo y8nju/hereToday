@@ -34,7 +34,7 @@ export default function TalkScreen({navigation, route}) {
 	}
 	
 	function onRead() {
-		const idToken = ctx.auth.idToken;
+		const idToken = ctx.auth?.idToken;
 		messageList(idToken)
 		.then( (recv) => {
 			const messageArr = Object.keys(recv).map((name) => { return {name, ...recv[name]}});

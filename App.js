@@ -48,7 +48,7 @@ function MemberStackNavigator() {
 	</Stack.Navigator>)
 }
 function TalkStackNavigator() {
-	return (<Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
+	return (<Stack.Navigator initialRouteName="Talk"  screenOptions={{animation: 'slide_from_right'}}>
 		<Stack.Screen name="Talk" component={TalkScreen} options={{title: '이야기'}}/>
 		<Stack.Screen name="TalkWrite" component={talkWriteScreen} options={{title: '이야기 쓰기', presentation: 'modal', animation: 'fade_from_bottom'}}/>
 		<Stack.Screen name="TalkView" component={TalkViewScreen} options={{title: '이야기'}}/>
