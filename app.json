@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "오늘여기",
-    "slug": "오늘여기",
+    "slug": "hereToday",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,13 +18,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "1"
     },
     "android": {
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.yoonju.hereToday"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,6 +43,11 @@
           "CameraPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "81ab356c-c35c-4da8-9b60-a30ee7816d78"
+      }
+    }
   }
 }
