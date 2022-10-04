@@ -35,6 +35,7 @@ export default function HomeScreen({route}) {
 				{type ? '2Km' : '전체'} <Ionicons name="chevron-down" size={12} color="black" />
 				</HeaderRightButton>
 		});
+		console.log(location)
 	});
 	useEffect(()=> {
 		// setRefresh(true);
