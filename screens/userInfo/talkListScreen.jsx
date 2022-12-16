@@ -29,7 +29,7 @@ export default function TalkListScreen() {
 	}
 	function TalkItem({data}) {
 		const talkData = data.item;
-		return (<Pressable style={styles.itemArea} onPress={()=> navigation.navigate('TalkView', {data: talkData})}>
+		return (<Pressable style={styles.itemArea} onPress={()=> navigation.navigate('TalkStack', {data: talkData})}>
 			<View style={styles.itemTitle}>
 				<Text style={{fontFamily: 'SUIT-SemiBold', textAlign: 'justify'}} numberOfLines={1}>{talkData.title}</Text>
 

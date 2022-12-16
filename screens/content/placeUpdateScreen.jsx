@@ -23,8 +23,9 @@ export default function PlaceUpdateScreen({navigation, route}) {
 	
     const data = route.params.data;
     const {name, placeItem} = data;
+	console.log('name', name)
 	const ctx = useContext(AppContext);
-    // console.log(placeImageBase64.slice(0, 10))
+    // console.log('placeImageBase64', placeImageBase64.slice(0, 10))
     useEffect(()=>{
         setPlaceName(placeItem.title);
         setPlaceInfo(placeItem.info);
@@ -68,14 +69,17 @@ export default function PlaceUpdateScreen({navigation, route}) {
 								const data = {
 									title: placeName,
 									info: placeInfo,
-									fileUri: placeImage,
-									location: placeLocation
+									imgURI: placeImage,
+									location: placeLocation,
+									createdAt: placeItem.createdAt
 								}
 								const idToken = ctx.auth.idToken;
 								const writer = ctx.auth.email;
-								placeUpdate( data, placeImageBase64, placeImage, name, idToken, writer)
+								await placeUpdate( placeImageBase64, placeImage, data, name, idToken, writer);
+								
 							} catch (e) {
 								console.log(e);
+								console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeee')
 							}
 						}();
 						setTimeout(()=>{

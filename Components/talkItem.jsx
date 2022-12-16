@@ -16,7 +16,7 @@ export default function TalkItem({data}) {
 				<CustomText style={{textAlign: 'justify', fontSize: 16}} weight={600}>{message.title}</CustomText>
 			</View>
 			<View style={{paddingBottom: 10, paddingHorizontal: 20}}>
-				<Text style={{fontFamily: 'SUIT-Regular', textAlign: 'justify'}} numberOfLines={2}>{message.content}</Text>
+				<Text style={{fontFamily: 'SUIT-Regular'}} numberOfLines={2}>{message.content}</Text>
 			</View>
 			<View style={[styles.padding, {flexDirection: "row", justifyContent: 'space-between', borderTopColor: '#eee', borderTopWidth: 1 }]}>
 				<CustomText style={{fontSize: 12, color: "#777"}}>{message.writer}</CustomText>

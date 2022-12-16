@@ -44,26 +44,29 @@ export async function placeFavorite(favoriteArr, name, idToken) {
 
 }
 
-export async function placeUpdate(placeData, fileData, fileURI, name, idToken, writer) {
-	const fileName = fileURI.substring(fileURI.lastIndexOf('/') + 1);
+export async function placeUpdate(placeImageBase64, placeImage, placeData,  name, idToken, writer) {
+	const fileName = placeImage.substring(placeImage.lastIndexOf('/') + 1);
 	const endPoint = `https://firebasestorage.googleapis.com/v0/b/with-b2c7b.appspot.com/o/${fileName}`
-	const uploadResult = await axios({
-		url: endPoint,
-		method: 'post',
-		headers: {
-			"Content-type": "image/jpeg"
-		},
-		// npm i buffer
-		data: Buffer.from(fileData, "base64")
-	})
 
-	const placeItem ={...placeData, 
-		imgURI: `${endPoint}?alt=media`, 
-		writer,
-		createdAt: new Date()}
+	let placeItem ={...placeData, 
+		writer}
+	if(placeImageBase64) {
+		const uploadResult = await axios({
+			url: endPoint,
+			method: 'post',
+			headers: {
+				"Content-type": "image/jpeg"
+			},
+			// npm i buffer
+			data: Buffer.from(placeImageBase64, "base64")
+		})
+		placeItem = {...placeItem, 
+			imgURI: `${endPoint}?alt=media`}
+	}
 	const response = await axios.patch(`https://with-b2c7b-default-rtdb.asia-southeast1.firebasedatabase.app/place/${name}.json?auth=${idToken}`, {
 		placeItem
 	})
+	console.log('response??????????????????????', response.data)
 	return response.data
 }
 

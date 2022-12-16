@@ -35,11 +35,11 @@ export default function HomeScreen({route}) {
 				{type ? '2Km' : '전체'} <Ionicons name="chevron-down" size={12} color="black" />
 				</HeaderRightButton>
 		});
-		console.log(location)
+		// console.log(location)
 	});
 	useEffect(()=> {
 		// setRefresh(true);
-		console.log('route.params :', route.params)
+		// console.log('route.params :', route.params)
 		if(route.params) {
 			switch(route.params.status) {
 				case 'login':
@@ -69,7 +69,7 @@ export default function HomeScreen({route}) {
 		setLoaded(true);
 		if(locationPermission) {
 			verifyPermition();
-			console.log('locationPermission : ', locationPermission);
+			// console.log('locationPermission : ', locationPermission);
 		}
 	},[locationPermission]);
 	useEffect(()=> {
@@ -92,7 +92,7 @@ export default function HomeScreen({route}) {
 		setLoaded(true);
 		onRead(places);
 		setLoaded(false);
-		console.log(places)
+		// console.log(places)
 	},[allPlace]);
 
 	const verifyPermition = async() => {
@@ -114,7 +114,7 @@ export default function HomeScreen({route}) {
 		let idToken = ctx.auth?.idToken;
 		if(idToken) {
 			const result = await placeList(idToken);
-			console.log(result);
+			// console.log(result);
 			const placeArr = Object.keys(result).map((name) => { return {name, ...result[name]}});
 			placeArr.sort((a, b) => a.createdAt - b.createdAt).reverse();
 			setAllPlace(ctx.addRangeFieldAndSort(placeArr, location?.lat, location?.lng));

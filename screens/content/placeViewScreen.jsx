@@ -151,7 +151,7 @@ export default function PlaceViewScreen({navigation, route}) {
 			</ScrollView>
 			<View style={styles.footerArea}>
 				<View style={{flexDirection: 'row', alignItems: 'center'}}>
-					<CustomText style={{fontSize: 12, color: "#777"}}> {favoriteArr.length == 0 ? '' : '관심 ' + favoriteArr.length}</CustomText>
+					<CustomText style={{fontSize: 12, color: "#777"}}> {favoriteArr == undefined ? '' : '관심 ' + favoriteArr.length}</CustomText>
 					<View style={{borderLeftColor: '#ddd', borderLeftWidth: 1, marginLeft: 18, paddingHorizontal: 8}}>
 						<View style={{overflow: 'hidden', borderRadius: 12, width: 26, height: 26 }}>
 							<Pressable android_ripple={{color: "#00000010"}} style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} onPress={favoriteHandle}>
